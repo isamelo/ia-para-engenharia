@@ -1,0 +1,50 @@
+---
+title: "Atenção é tudo de que você precisa"
+description: O paper que apresentou a arquitetura Transformer baseada em mecanismos de atenção.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: forte
+fonte_original: https://arxiv.org/abs/1706.03762
+tags: [fundamentos, transformers, atenção]
+autor: Vaswani et al.
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="forte" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O paper apresenta o Transformer, uma arquitetura para processamento sequencial que usa
+atenção em vez de recorrer a recorrência como mecanismo central. A arquitetura combina
+atenção própria, projeções em múltiplas cabeças, codificação posicional e blocos de
+transformação. O trabalho foi originalmente avaliado em tradução automática.
+
+## Ideias-chave
+
+- A atenção permite relacionar posições distantes da sequência em paralelo durante o
+  treinamento, facilitando o uso de hardware moderno.
+- Múltiplas cabeças podem capturar relações diferentes entre tokens, enquanto conexões
+  residuais e normalização estabilizam a otimização.
+- A arquitetura separa um codificador de um decodificador no desenho original, embora
+  variantes posteriores usem apenas uma dessas partes.
+
+## O que isso muda no seu dia a dia
+
+Quando você ouvir “modelo Transformer”, pense em uma família arquitetural, não em um
+produto específico. O conceito ajuda a entender por que comprimento de contexto, custo de
+atenção e tokenização aparecem em decisões de aplicação. Também explica por que modelos
+modernos conseguem processar relações entre partes distantes, sem tornar essas relações
+automaticamente corretas.
+
+## Limitações e críticas
+
+O resultado original não descreve sozinho os grandes modelos generativos atuais, que
+incorporam dados, escalas e técnicas de treinamento adicionais. Atenção tem custos que
+crescem com o contexto e pode sofrer com entradas muito longas. O paper também não
+resolve factualidade, segurança, interpretação ou alinhamento.
+
+## Link para o original
+
+[Attention Is All You Need — arXiv](https://arxiv.org/abs/1706.03762)

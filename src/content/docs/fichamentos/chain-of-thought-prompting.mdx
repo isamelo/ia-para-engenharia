@@ -1,0 +1,49 @@
+---
+title: Prompting com cadeia de pensamento
+description: Estudo sobre o uso de exemplos de raciocínio intermediário em tarefas de múltiplas etapas.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: forte
+fonte_original: https://arxiv.org/abs/2201.11903
+tags: [prompt, raciocínio, avaliações]
+autor: Wei et al.
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="forte" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O trabalho investiga prompts que incluem exemplos com passos intermediários de solução,
+em vez de apenas pares de pergunta e resposta. Os autores relatam ganhos em tarefas de
+raciocínio quando o modelo tem capacidade e escala suficientes. O estudo ajudou a
+popularizar a investigação de estratégias de prompting para problemas compostos.
+
+## Ideias-chave
+
+- Exemplos intermediários podem orientar a decomposição de uma tarefa e tornar a saída
+  final mais consistente em alguns benchmarks.
+- O efeito depende da capacidade do modelo, da tarefa, da qualidade dos exemplos e da
+  forma como o raciocínio é representado.
+- Mostrar uma explicação não é o mesmo que garantir um processo interno fiel ou uma
+  resposta verdadeira.
+
+## O que isso muda no seu dia a dia
+
+Para tarefas verificáveis, peça uma estrutura de trabalho que exponha premissas, etapas e
+checagens, e valide o resultado por testes ou ferramentas. Compare esse formato com uma
+resposta direta usando um conjunto fixo de casos. Não trate texto explicativo como
+evidência suficiente para uma decisão de engenharia.
+
+## Limitações e críticas
+
+Os experimentos se concentram em benchmarks e modelos disponíveis no período do estudo,
+por isso não determinam o comportamento de modelos atuais. Raciocínios longos aumentam
+tokens, latência e superfície para erros. Pesquisas posteriores também questionam quando
+as explicações geradas correspondem ao processo que produziu a resposta.
+
+## Link para o original
+
+[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models — arXiv](https://arxiv.org/abs/2201.11903)

@@ -1,0 +1,49 @@
+---
+title: Seu produto de IA precisa de avaliações
+description: Como avaliações contínuas reduzem incerteza no desenvolvimento de produtos com IA.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: opiniao
+fonte_original: https://hamel.dev/blog/posts/evals/
+tags: [avaliações, produto, qualidade]
+autor: Hamel Husain
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="opiniao" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O texto argumenta que um produto de IA precisa de avaliações desde o início, não apenas
+quando uma versão está pronta. A avaliação transforma exemplos de comportamento em um
+instrumento para comparar prompts, modelos, dados e mudanças de código. O enfoque é
+prático: construir um conjunto pequeno de casos úteis e iterar com base em falhas.
+
+## Ideias-chave
+
+- Casos de avaliação devem representar o que pessoas realmente pedem, incluindo entradas
+  difíceis, ambiguidades e respostas que não podem ser aceitas.
+- Rótulos e critérios precisam ser claros o bastante para orientar correções, sem fingir
+  uma precisão que o julgamento não possui.
+- Avaliações automatizadas aceleram o ciclo, mas amostras revisadas por pessoas ajudam a
+  calibrar métricas e detectar regressões semânticas.
+
+## O que isso muda no seu dia a dia
+
+Comece um arquivo versionado de casos antes de otimizar o prompt. Registre a falha, a
+hipótese de correção e o resultado da nova versão, separando melhoria média de regressão
+em casos críticos. Use avaliações para decidir se uma mudança está pronta, e não apenas
+para gerar um número depois do lançamento.
+
+## Limitações e críticas
+
+O texto representa experiência de praticante e não uma comparação controlada de métodos
+de avaliação. Um conjunto de casos pode ficar enviesado para o que a equipe já conhece.
+Métricas e juízes automáticos também podem ser enganados, devendo ser combinados com
+critérios de risco e revisão humana.
+
+## Link para o original
+
+[Your AI Product Needs Evals — Hamel Husain](https://hamel.dev/blog/posts/evals/)

@@ -1,0 +1,49 @@
+---
+title: Padrões para construir sistemas e produtos com LLMs
+description: Uma coleção de padrões de produto e engenharia para aplicações baseadas em modelos de linguagem.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: opiniao
+fonte_original: https://eugeneyan.com/writing/llm-patterns/
+tags: [produto, padrões, engenharia]
+autor: Eugene Yan
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="opiniao" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O artigo reúne padrões recorrentes para transformar capacidades de LLM em experiências
+úteis, como recuperação, roteamento, decomposição, verificação e interação humana.
+A abordagem é baseada em observações de sistemas e produtos, com exemplos de como reduzir
+fragilidade e aumentar previsibilidade. O valor principal está em organizar decisões que
+costumam aparecer espalhadas.
+
+## Ideias-chave
+
+- Um fluxo robusto normalmente combina o modelo com regras, dados, ferramentas e
+  verificações, em vez de pedir uma resposta única.
+- Padrões devem ser escolhidos pelo problema e medidos pelo impacto no usuário, custo,
+  latência e manutenção.
+- O desenho da interface pode reduzir ambiguidade e permitir que a pessoa corrija o
+  sistema antes de um erro se propagar.
+
+## O que isso muda no seu dia a dia
+
+Ao revisar uma feature de IA, nomeie explicitamente o padrão usado e o risco que ele
+mitiga. Compare uma arquitetura simples com uma cadeia mais elaborada usando casos reais.
+Crie pontos de intervenção para o usuário quando a saída for incerta ou tiver efeito
+irreversível.
+
+## Limitações e críticas
+
+O texto é uma coleção de práticas de um profissional, não uma validação independente de
+cada padrão. Padrões podem virar complexidade acidental quando são aplicados sem uma
+hipótese mensurável. Os exemplos também refletem um período e um ecossistema específicos.
+
+## Link para o original
+
+[Patterns for Building LLM-based Systems & Products — Eugene Yan](https://eugeneyan.com/writing/llm-patterns/)

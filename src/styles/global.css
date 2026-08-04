@@ -4,35 +4,16 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
+/* Accent de marca (teal). Só accent — o Starlight cuida de texto/fundo por tema. */
 :root {
-  --sl-color-accent-low: #d7f0ef;
-  --sl-color-accent: #087f82;
-  --sl-color-accent-high: #07575a;
-  --sl-color-white: #f8fafc;
-  --sl-color-gray-1: #e8eef2;
-  --sl-color-gray-2: #c4d1d8;
-  --sl-color-gray-3: #8397a2;
-  --sl-color-gray-4: #536a76;
-  --sl-color-gray-5: #304752;
-  --sl-color-gray-6: #1d303a;
-  --sl-color-black: #102129;
-  --sl-font: 'Inter', 'Segoe UI', sans-serif;
+  --sl-color-accent-low: #cfece9;
+  --sl-color-accent: #0f766e;
+  --sl-color-accent-high: #134e4a;
+  --sl-font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 :root[data-theme='dark'] {
-  --sl-color-accent-low: #123f41;
+  --sl-color-accent-low: #143f3c;
   --sl-color-accent: #4ec7c5;
   --sl-color-accent-high: #b7f0ed;
-  --sl-color-white: #f0f7f8;
-  --sl-color-gray-1: #d5e2e5;
-  --sl-color-gray-2: #a4b8be;
-  --sl-color-gray-3: #718990;
-  --sl-color-gray-4: #4c656e;
-  --sl-color-gray-5: #304951;
-  --sl-color-gray-6: #1b3239;
-  --sl-color-black: #0c1b20;
-}
-
-:root {
-  font-family: var(--sl-font);
 }

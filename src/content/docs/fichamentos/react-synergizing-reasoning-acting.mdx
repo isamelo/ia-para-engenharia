@@ -1,0 +1,48 @@
+---
+title: "ReAct: raciocínio e ação em conjunto"
+description: Um padrão que intercala decisões textuais com ações em ferramentas ou ambientes.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: forte
+fonte_original: https://arxiv.org/abs/2210.03629
+tags: [agentes, raciocínio, ferramentas]
+autor: Yao et al.
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="forte" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+ReAct combina passos de raciocínio com ações que consultam um ambiente e retornam
+observações. Em tarefas de perguntas e respostas, esse ciclo pode alternar hipóteses,
+buscas e revisões em vez de tentar resolver tudo em uma única geração. O paper avalia o
+padrão em tarefas de linguagem e ambientes de decisão.
+
+## Ideias-chave
+
+- A observação externa pode corrigir uma hipótese antes que o sistema conclua a tarefa.
+- Separar ação e observação cria pontos de instrumentação e permite limitar ferramentas
+  disponíveis em cada etapa.
+- O padrão é uma forma de orquestração; ele não elimina alucinações nem garante que a
+  próxima ação seja segura.
+
+## O que isso muda no seu dia a dia
+
+Use ciclos curtos quando uma resposta depende de consulta a dados atualizados ou de uma
+ferramenta verificável. Registre qual observação justificou cada ação e imponha limite de
+passos, tempo e custo. Para operações com efeitos colaterais, exija confirmação ou uma
+política de autorização antes da execução.
+
+## Limitações e críticas
+
+O desempenho apresentado depende dos ambientes, prompts e modelos usados no estudo.
+Loops podem repetir erros, acumular contexto irrelevante ou executar ações desnecessárias.
+Em produção, a arquitetura precisa de avaliações específicas, tratamento de falhas e
+controles que não são resolvidos pelo padrão sozinho.
+
+## Link para o original
+
+[ReAct: Synergizing Reasoning and Acting in Language Models — arXiv](https://arxiv.org/abs/2210.03629)

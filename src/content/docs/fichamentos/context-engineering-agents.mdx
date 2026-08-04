@@ -1,0 +1,49 @@
+---
+title: Engenharia de contexto para agentes
+description: Como tratar contexto como um recurso de engenharia em sistemas agentivos.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: emergente
+fonte_original: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+tags: [agentes, contexto, prompt]
+autor: Anthropic
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="emergente" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+Engenharia de contexto é a prática de selecionar, estruturar e atualizar as informações
+que um modelo recebe ao longo de uma tarefa. A ideia amplia o foco além do texto do
+prompt: histórico, ferramentas, arquivos, resultados anteriores e estado também influenciam
+o comportamento. Em agentes, administrar esse contexto é uma atividade contínua.
+
+## Ideias-chave
+
+- Contexto deve ser suficiente para a decisão atual, mas não tão volumoso que dilua sinais
+  importantes ou aumente custo e latência.
+- Resumos, recuperação seletiva, janelas de estado e resultados de ferramentas são formas
+  de controlar o que permanece disponível.
+- Instruções, dados externos e observações do ambiente devem ter papéis distinguíveis para
+  reduzir confusão e facilitar auditoria.
+
+## O que isso muda no seu dia a dia
+
+Meça quais partes do contexto uma tarefa realmente usa e remova conteúdo redundante.
+Defina políticas para resumir histórico, conservar decisões e recuperar documentos sob
+demanda. Ao depurar um agente, registre o contexto efetivo da chamada, respeitando dados
+sensíveis, em vez de olhar somente para o prompt-base.
+
+## Limitações e críticas
+
+O artigo é orientação de engenharia publicada por um fornecedor e não estabelece um
+protocolo universal de gerenciamento de contexto. A eficácia de uma técnica varia com
+modelo, tarefa, idioma e qualidade dos dados recuperados. Resumir contexto também pode
+apagar uma exceção relevante, por isso deve ser coberto por avaliações.
+
+## Link para o original
+
+[Effective context engineering for AI agents — Anthropic](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)

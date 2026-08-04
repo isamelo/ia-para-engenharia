@@ -1,0 +1,50 @@
+---
+title: Construindo agentes eficazes
+description: Um resumo prático das escolhas que tornam sistemas agentivos mais confiáveis.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: emergente
+fonte_original: https://www.anthropic.com/engineering/building-effective-agents
+tags: [agentes, arquitetura, ferramentas]
+autor: Anthropic
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="emergente" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O texto apresenta uma distinção útil entre **workflows**, em que o caminho é previamente
+definido, e **agentes**, em que o modelo decide dinamicamente quais passos executar.
+Em vez de tratar todo problema como um agente autônomo, a proposta recomenda começar pela
+solução mais simples que atende ao objetivo. O foco é engenharia de sistemas, não uma
+receita universal para autonomia.
+
+## Ideias-chave
+
+- Workflows podem encadear prompts, roteamento, paralelismo ou revisão sem delegar todo o
+  controle ao modelo.
+- Agentes são apropriados quando o número ou a ordem dos passos depende do contexto e de
+  resultados intermediários.
+- Ferramentas precisam de descrições claras, contratos estreitos, erros legíveis e
+  observabilidade; a qualidade do conjunto de ferramentas limita o comportamento do agente.
+
+## O que isso muda no seu dia a dia
+
+Antes de adicionar um loop agentivo, descreva o fluxo determinístico que resolveria o caso
+e registre por que ele não é suficiente. Comece com poucas ferramentas, permissões mínimas
+e pontos explícitos de aprovação humana. Instrumente chamadas, custos, falhas e resultados
+para avaliar se a autonomia realmente melhora o trabalho.
+
+## Limitações e críticas
+
+O material é uma orientação de engenharia de uma empresa fornecedora, não um estudo
+controlado que compare todas as arquiteturas em condições iguais. Exemplos de agentes
+podem refletir os modelos, APIs e casos de uso do ecossistema da Anthropic. A recomendação
+de simplicidade é valiosa, mas a fronteira entre workflow e agente depende do domínio.
+
+## Link para o original
+
+[Building effective agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents)

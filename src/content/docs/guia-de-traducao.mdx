@@ -1,0 +1,36 @@
+---
+title: Guia de tradução
+description: Princípios práticos para escrever sobre IA em português do Brasil.
+---
+
+Este guia ajuda contribuidores a manter uma linguagem consistente, legível e tecnicamente
+precisa.
+
+## Princípios
+
+- Escreva em português do Brasil sempre que houver uma tradução compreensível e estável.
+- Na primeira ocorrência, apresente o termo em português e o inglês entre parênteses quando
+  isso facilitar a busca por documentação técnica.
+- Mantenha em inglês nomes de produtos, APIs, comandos, campos de configuração e termos
+  que funcionam como nomes próprios, como `prompt`, `embedding` e `token`.
+- Não traduza literalmente expressões cujo sentido técnico se perderia; prefira explicar
+  o conceito e registrar a forma canônica no glossário.
+- Use “modelo” para *model*, “agente” para *agent* e “avaliação” para *eval* ou *evals*,
+  salvo quando o nome oficial de uma ferramenta exigir outra forma.
+- Evite transformar jargão em promessa: “pode auxiliar” é mais preciso do que “resolve”.
+
+## Exemplos
+
+Prefira: “Use **geração aumentada por recuperação (RAG)** quando as respostas precisam
+estar ancoradas em documentos atualizados.” Depois da primeira ocorrência, “RAG” pode ser
+usado sem repetir a expansão.
+
+Prefira: “O sistema faz **chamada de ferramenta** para consultar o inventário.” A palavra
+“tool calling” pode aparecer entre parênteses em uma referência técnica, mas não precisa
+dominar o texto em português.
+
+Mantenha: “O `prompt` inclui um `embedding` para cada trecho.” Esses termos têm uso
+consolidado entre equipes brasileiras e são mais fáceis de localizar em APIs e literatura.
+
+Evite: “A IA entende o problema perfeitamente.” Prefira descrever o comportamento
+observável, a condição de sucesso e as limitações conhecidas.

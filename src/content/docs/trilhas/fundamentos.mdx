@@ -1,0 +1,143 @@
+---
+title: Trilha de Fundamentos
+description: Uma base de aproximadamente 20 horas para aplicar IA à engenharia com critério.
+---
+
+import ProgressoTrilha from '../../../components/react/ProgressoTrilha';
+
+Esta trilha é a porta de entrada para entender o suficiente sobre modelos e sistemas de
+IA para trabalhar com segurança, depurar problemas e fazer perguntas melhores.
+
+<ProgressoTrilha client:load trilhaId="fundamentos" modulos={[{id: 'modelo', titulo: 'Como um LLM funciona'}, {id: 'prompting', titulo: 'Prompting em produção'}, {id: 'contexto', titulo: 'Engenharia de contexto'}, {id: 'ferramentas', titulo: 'Tool/function calling'}, {id: 'limites', titulo: 'Alucinação, viés e limites'}, {id: 'etica', titulo: 'Ética, LGPD e dados de terceiros'}]} />
+
+## Módulos
+
+### Como um LLM funciona o suficiente para depurar
+
+**Objetivo:** Entender tokens, janela de contexto, temperatura e amostragem para formular
+hipóteses sobre uma saída inesperada.
+
+**Pré-requisitos:** Leitura técnica básica e familiaridade com entradas e saídas de APIs.
+
+**Horas estimadas:** 3 horas.
+
+**Recursos:** [Atenção é tudo de que você precisa](../../fichamentos/attention-is-all-you-need/) e
+[o original](https://arxiv.org/abs/1706.03762).
+
+**Exercício prático:** Faça a mesma tarefa com entradas curtas e longas, registre tokens,
+varie temperatura e compare estabilidade, custo e qualidade.
+
+**Critério de conclusão (DoD):** Você consegue explicar uma diferença de saída usando
+tokenização, contexto ou amostragem, sem atribuí-la a “inteligência” de forma vaga.
+
+**Artefato que prova o aprendizado:** Uma nota de depuração com três execuções, hipóteses,
+parâmetros e conclusão sustentada pelos resultados.
+
+### Prompting que sobrevive em produção
+
+**Objetivo:** Escrever instruções com contrato de entrada, saída, limites e critérios de
+aceitação que possam ser avaliadas.
+
+**Pré-requisitos:** Módulo anterior e uma tarefa repetitiva real.
+
+**Horas estimadas:** 3 horas.
+
+**Recursos:** [Prompting com cadeia de pensamento](../../fichamentos/chain-of-thought-prompting/) e
+[o original](https://arxiv.org/abs/2201.11903).
+
+**Exercício prático:** Transforme um prompt improvisado em uma especificação com exemplos,
+formato de resposta, casos de recusa e uma pequena coleção de testes.
+
+**Critério de conclusão (DoD):** Outra pessoa consegue executar o prompt e avaliar a saída
+sem depender de explicações orais suas.
+
+**Artefato que prova o aprendizado:** Um arquivo de prompt versionado acompanhado de dez
+casos de teste e uma tabela simples de resultados.
+
+### Engenharia de contexto > engenharia de prompt
+
+**Objetivo:** Selecionar, organizar e atualizar o contexto efetivo de uma tarefa, além do
+texto fixo do prompt.
+
+**Pré-requisitos:** Saber descrever entradas, saídas e falhas da tarefa.
+
+**Horas estimadas:** 4 horas.
+
+**Recursos:** [Engenharia de contexto para agentes](../../fichamentos/context-engineering-agents/) e
+[o original](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents);
+consulte também [Lost in the Middle](../../fichamentos/lost-in-the-middle/).
+
+**Exercício prático:** Compare um prompt com todo o histórico, um resumo do histórico e
+uma recuperação seletiva de trechos; registre o que foi perdido e o que melhorou.
+
+**Critério de conclusão (DoD):** Você tem uma política explícita para selecionar, resumir,
+versionar e remover contexto.
+
+**Artefato que prova o aprendizado:** Diagrama do fluxo de contexto e uma tabela com
+posição, origem, sensibilidade e tempo de vida de cada informação.
+
+### Tool/function calling e por que quebra
+
+**Objetivo:** Entender como modelos solicitam ferramentas e quais falhas surgem em
+contratos, argumentos, permissões e efeitos colaterais.
+
+**Pré-requisitos:** Noções de APIs HTTP e validação de dados.
+
+**Horas estimadas:** 3 horas.
+
+**Recursos:** [Construindo agentes eficazes](../../fichamentos/building-effective-agents/) e
+[o original](https://www.anthropic.com/engineering/building-effective-agents); consulte
+também [ReAct](../../fichamentos/react-synergizing-reasoning-acting/).
+
+**Exercício prático:** Modele uma ferramenta de consulta e uma de escrita, introduza
+argumentos inválidos e observe como o sistema reage sem executar efeitos perigosos.
+
+**Critério de conclusão (DoD):** O contrato valida tipos, permissões, idempotência, erros
+e confirmação para ações destrutivas.
+
+**Artefato que prova o aprendizado:** Especificação da ferramenta com exemplos válidos,
+inválidos, mensagens de erro e matriz de autorização.
+
+### Alucinação, viés e limites
+
+**Objetivo:** Reconhecer quando uma resposta plausível não tem suporte e como reduzir risco
+sem prometer factualidade perfeita.
+
+**Pré-requisitos:** Conhecer avaliação básica e diferença entre hipótese e evidência.
+
+**Horas estimadas:** 3 horas.
+
+**Recursos:** [Geração aumentada por recuperação](../../fichamentos/retrieval-augmented-generation/)
+e [o original](https://arxiv.org/abs/2005.11401); consulte também
+[Lost in the Middle](../../fichamentos/lost-in-the-middle/).
+
+**Exercício prático:** Crie perguntas com resposta conhecida, informação ausente e
+ambiguidade; classifique suporte, incerteza, viés e ação segura para cada saída.
+
+**Critério de conclusão (DoD):** Você consegue diferenciar uma resposta errada, uma
+resposta sem evidência e uma resposta limitada pelo contexto disponível.
+
+**Artefato que prova o aprendizado:** Catálogo de falhas com evidência esperada, saída
+observada, impacto e mitigação.
+
+### Ética, LGPD e dado de terceiro no prompt
+
+**Objetivo:** Avaliar dados, finalidade, minimização e responsabilidade antes de enviar
+informação a um modelo ou fornecedor.
+
+**Pré-requisitos:** Conhecer o fluxo de dados do produto e noções de segurança.
+
+**Horas estimadas:** 4 horas.
+
+**Recursos:** [NIST AI RMF 1.0](../../fichamentos/nist-ai-rmf-1-0/) e
+[o original](https://www.nist.gov/itl/ai-risk-management-framework); consulte também
+[OWASP para aplicações com LLM](../../fichamentos/owasp-top-10-llm-applications/).
+
+**Exercício prático:** Faça um inventário de dados de um prompt real, classifique
+finalidade, base legal, retenção, acesso e risco de exposição de dados de terceiros.
+
+**Critério de conclusão (DoD):** Existe uma decisão registrada para cada campo sensível,
+com alternativa de minimização ou anonimização quando necessário.
+
+**Artefato que prova o aprendizado:** Fluxo de dados anotado, checklist de revisão e
+registro de aprovação para o caso escolhido.

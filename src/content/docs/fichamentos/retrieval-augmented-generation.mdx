@@ -1,0 +1,49 @@
+---
+title: Geração aumentada por recuperação
+description: Arquitetura que combina recuperação de documentos com geração de linguagem.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: forte
+fonte_original: https://arxiv.org/abs/2005.11401
+tags: [RAG, recuperação, grounding]
+autor: Lewis et al.
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="forte" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+Retrieval-Augmented Generation (RAG), ou geração aumentada por recuperação, combina um
+modelo gerador com uma memória externa pesquisável. Antes da geração, o sistema recupera
+passagens relacionadas à pergunta e as fornece como contexto. O paper descreve uma
+formulação que une memória paramétrica do modelo a um índice não paramétrico.
+
+## Ideias-chave
+
+- Recuperar evidências pode atualizar o conhecimento usado sem retreinar todos os
+  parâmetros do modelo.
+- A qualidade final depende tanto da recuperação quanto da capacidade de geração e da
+  forma de atribuir a resposta às fontes.
+- O índice, a segmentação dos documentos, o ranking e a política de atualização são partes
+  do sistema, não detalhes secundários.
+
+## O que isso muda no seu dia a dia
+
+Construa avaliações separadas para recuperação e para resposta, pois um gerador pode
+esconder falhas do buscador. Preserve identificadores e trechos de origem para permitir
+auditoria e mostre incerteza quando não houver evidência suficiente. Atualize o índice
+com uma política explícita de versionamento, acesso e remoção de dados.
+
+## Limitações e críticas
+
+RAG não impede que o modelo ignore, misture ou contradiga o contexto recuperado. O paper
+original usa configuração e tarefas específicas, que não representam toda aplicação
+empresarial. Documentos incompletos, permissões mal aplicadas e recuperação enviesada
+podem produzir respostas convincentes e incorretas.
+
+## Link para o original
+
+[Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks — arXiv](https://arxiv.org/abs/2005.11401)

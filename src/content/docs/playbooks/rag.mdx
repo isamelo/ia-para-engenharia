@@ -1,0 +1,84 @@
+---
+title: Playbook de RAG
+description: Recupere contexto relevante, preserve evidências e meça a busca antes de otimizar a geração.
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+
+<Evidencia nivel="forte" />
+
+RAG, ou geração aumentada por recuperação, não é apenas colocar documentos em um banco
+vetorial. A qualidade depende de ingestão, particionamento, representação, busca,
+reordenação, permissões e avaliação.
+
+## 1. Faça chunking reproduzível
+
+Particione por estrutura semântica quando possível e preserve título, origem, versão e
+permissões em cada trecho. Limites fixos são um ponto inicial, não uma regra universal.
+
+```python
+def particionar(texto: str, tamanho: int = 800, sobreposicao: int = 120):
+    inicio = 0
+    while inicio < len(texto):
+        fim = min(len(texto), inicio + tamanho)
+        yield texto[inicio:fim]
+        if fim == len(texto):
+            break
+        inicio = fim - sobreposicao
+```
+
+## 2. Recupere e filtre
+
+Embeddings ajudam a buscar proximidade semântica, mas filtros de tenant, versão e
+permissão devem ser aplicados no servidor. Uma busca híbrida pode combinar termos exatos
+e similaridade vetorial quando nomes, códigos ou identificadores importam.
+
+```python
+def recuperar(pergunta, indice, tenant_id, k=10):
+    candidatos = indice.similarity_search(pergunta, k=k * 3)
+    autorizados = [
+        item for item in candidatos
+        if item.metadata["tenant_id"] == tenant_id
+        and item.metadata["pode_ler"] is True
+    ]
+    return autorizados[:k]
+```
+
+## 3. Faça reranking quando houver sinal
+
+Reranking aplica um modelo ou regra mais precisa sobre um conjunto menor de candidatos.
+Ele pode melhorar a ordem dos trechos, mas adiciona custo e latência. Meça o ganho antes
+de colocá-lo em toda requisição.
+
+```python
+def reranquear(pergunta, candidatos, classificador):
+    pontuados = [
+        (classificador.score(pergunta, item.texto), item)
+        for item in candidatos
+    ]
+    return [item for _, item in sorted(pontuados, reverse=True)]
+```
+
+## 4. Meça recall@k, MRR e nDCG
+
+`recall@k` pergunta se ao menos uma evidência relevante apareceu nos primeiros k
+resultados. MRR valoriza a posição do primeiro resultado correto; nDCG considera graus
+de relevância e posições. Avalie recuperação separadamente da resposta final.
+
+```python
+def recall_at_k(relevantes: set[str], retornados: list[str], k: int) -> float:
+    return float(bool(relevantes.intersection(retornados[:k])))
+
+def reciprocal_rank(relevantes: set[str], retornados: list[str]) -> float:
+    for posicao, doc_id in enumerate(retornados, start=1):
+        if doc_id in relevantes:
+            return 1 / posicao
+    return 0.0
+```
+
+## Pronto quando
+
+- Trechos têm origem, versão e autorização verificáveis.
+- Casos de avaliação incluem documentos relevantes, irrelevantes e desatualizados.
+- Recall@k e MRR têm baseline antes de reranking ou troca de embedding.
+- A resposta cita evidência recuperada e recusa quando não há suporte suficiente.
