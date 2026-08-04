@@ -1,0 +1,14 @@
+---
+interface Props {
+  nivel: 'forte' | 'emergente' | 'opiniao';
+}
+const { nivel } = Astro.props;
+const dados = {
+  forte: { rotulo: 'Evidência forte', classe: 'border-emerald-300 bg-emerald-50 text-emerald-800', dica: 'Há suporte consistente em fontes ou resultados reproduzíveis.' },
+  emergente: { rotulo: 'Emergente', classe: 'border-amber-300 bg-amber-50 text-amber-800', dica: 'Há sinais promissores, mas a evidência ainda está amadurecendo.' },
+  opiniao: { rotulo: 'Opinião', classe: 'border-slate-300 bg-slate-50 text-slate-700', dica: 'É uma interpretação ou experiência, não uma conclusão estabelecida.' },
+}[nivel];
+---
+<span class={`inline-flex cursor-help items-center rounded-full border px-3 py-1 text-sm font-semibold ${dados.classe}`} title={dados.dica}>
+  <span aria-hidden="true" class="mr-1">●</span>{dados.rotulo}
+</span>

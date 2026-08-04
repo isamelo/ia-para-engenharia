@@ -1,0 +1,13 @@
+{
+  "atualizado_em": "2025-08-01",
+  "cotacao_usd_brl": 5.4,
+  "nota": "Dados ilustrativos iniciais. Preços e políticas mudam rapidamente; confirme sempre na fonte oficial.",
+  "modelos": [
+    {"id": "gpt-4o-mini", "nome": "GPT-4o mini", "provedor": "OpenAI", "preco_input_usd_por_milhao": 0.15, "preco_output_usd_por_milhao": 0.6, "preco_cache_input_usd_por_milhao": 0.075},
+    {"id": "gpt-4.1", "nome": "GPT-4.1", "provedor": "OpenAI", "preco_input_usd_por_milhao": 2, "preco_output_usd_por_milhao": 8, "preco_cache_input_usd_por_milhao": 0.5},
+    {"id": "claude-3-7-sonnet", "nome": "Claude 3.7 Sonnet", "provedor": "Anthropic", "preco_input_usd_por_milhao": 3, "preco_output_usd_por_milhao": 15, "preco_cache_input_usd_por_milhao": 0.3},
+    {"id": "gemini-2-5-pro", "nome": "Gemini 2.5 Pro", "provedor": "Google", "preco_input_usd_por_milhao": 1.25, "preco_output_usd_por_milhao": 10, "preco_cache_input_usd_por_milhao": 0.3125},
+    {"id": "deepseek-v3", "nome": "DeepSeek V3", "provedor": "DeepSeek", "preco_input_usd_por_milhao": 0.27, "preco_output_usd_por_milhao": 1.1, "preco_cache_input_usd_por_milhao": 0.07},
+    {"id": "mistral-large", "nome": "Mistral Large", "provedor": "Mistral AI", "preco_input_usd_por_milhao": 2, "preco_output_usd_por_milhao": 6}
+  ]
+}
