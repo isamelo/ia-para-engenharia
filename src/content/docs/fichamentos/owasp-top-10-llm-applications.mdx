@@ -1,0 +1,50 @@
+---
+title: "OWASP: 10 principais riscos em aplicações com LLM"
+description: Mapa de riscos recorrentes para projetar e operar aplicações baseadas em modelos de linguagem.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: emergente
+fonte_original: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+tags: [segurança, governança, LLM]
+autor: OWASP
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="emergente" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O OWASP Top 10 para aplicações com LLM organiza classes de risco que aparecem em
+aplicações que recebem instruções, recuperam dados ou acionam ferramentas. Entre os
+temas estão injeção de prompt, saída insegura, excesso de autonomia, vazamento de
+informação e dependências com fragilidades. O documento serve como checklist de ameaça,
+não como certificação de segurança.
+
+## Ideias-chave
+
+- Entradas e saídas de um modelo devem ser tratadas como dados não confiáveis, mesmo quando
+  parecem instruções ou código bem formado.
+- Permissões mínimas, validação estrutural, isolamento, logs e aprovação humana reduzem o
+  impacto de falhas combinadas.
+- Segurança precisa cobrir a cadeia inteira: modelo, prompt, recuperação, ferramentas,
+  dados, dependências e interface.
+
+## O que isso muda no seu dia a dia
+
+Faça uma análise de ameaças antes de conectar um agente a sistemas de produção. Separe
+leitura de escrita, limite escopo e credenciais, e valide argumentos no servidor, não só
+no prompt. Teste ataques de injeção direta e indireta, vazamento de contexto e abuso de
+ferramentas em avaliações recorrentes.
+
+## Limitações e críticas
+
+Uma lista de riscos não fornece controles detalhados para todos os domínios ou arquiteturas.
+As categorias evoluem conforme técnicas de ataque e produtos mudam. O documento também
+não substitui padrões de segurança, requisitos legais, revisão de código ou análise de
+impacto específica.
+
+## Link para o original
+
+[OWASP Top 10 for Large Language Model Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)

@@ -1,0 +1,204 @@
+---
+title: Trilha de Backend
+description: Percurso de aproximadamente 40 horas para colocar funcionalidades com LLM em produção.
+---
+
+import ProgressoTrilha from '../../../components/react/ProgressoTrilha';
+
+Esta trilha segue um plano de 30, 60 e 90 dias. Ela é destinada a pessoas desenvolvedoras
+backend que querem trocar experimentos locais por um serviço operável e mensurável.
+
+<ProgressoTrilha client:load trilhaId="backend" modulos={[{id: 'assistente', titulo: '30 dias: disciplina com assistente'}, {id: 'servico', titulo: '60 dias: serviço LLM real'}, {id: 'rag', titulo: '60 dias: RAG sobre documentação interna'}, {id: 'evals', titulo: '90 dias: avaliações e observabilidade'}, {id: 'seguranca', titulo: '90 dias: guardrails e prompt injection'}, {id: 'oncall', titulo: '90 dias: custo e on-call'}]} />
+
+## 30 dias — disciplina com assistente de código
+
+### AGENTS.md e contexto de repositório
+
+**Objetivo:** Criar instruções operacionais que ajudem um assistente a navegar pelo
+repositório sem substituir o julgamento da equipe.
+
+**Pré-requisitos:** Acesso ao repositório, convenções de contribuição e uma tarefa real.
+
+**Horas estimadas:** 5 horas.
+
+**Recursos:** [AI Engineering](../../fichamentos/ai-engineering-chip-huyen/) e
+[o original](https://www.oreilly.com/library/view/ai-engineering/9781098166298/).
+
+**Exercício prático:** Escreva um `AGENTS.md` com arquitetura, comandos, limites de escopo,
+regras de teste e arquivos que não devem ser alterados automaticamente.
+
+**Critério de conclusão (DoD):** Uma tarefa nova pode ser iniciada por outra pessoa com
+contexto suficiente e sem instruções contraditórias.
+
+**Artefato que prova o aprendizado:** `AGENTS.md` revisado e uma tarefa executada seguindo
+suas instruções.
+
+### TDD com IA
+
+**Objetivo:** Usar IA para explorar casos e acelerar implementação sem terceirizar a
+definição do comportamento esperado.
+
+**Pré-requisitos:** Testes automatizados no projeto e uma funcionalidade pequena.
+
+**Horas estimadas:** 6 horas.
+
+**Recursos:** [Seu produto de IA precisa de avaliações](../../fichamentos/your-ai-product-needs-evals/) e
+[o original](https://hamel.dev/blog/posts/evals/).
+
+**Exercício prático:** Defina casos de aceitação, peça ao assistente variações negativas,
+implemente uma solução e revise cada teste antes de aceitá-lo.
+
+**Critério de conclusão (DoD):** Os testes falham por um motivo relevante antes da
+implementação e protegem comportamento, não detalhes acidentais.
+
+**Artefato que prova o aprendizado:** Pull request local com testes, implementação e
+registro das sugestões aceitas ou rejeitadas.
+
+### Revisão crítica e baseline pessoal
+
+**Objetivo:** Medir o próprio fluxo antes de atribuir ganhos de produtividade ao assistente.
+
+**Pré-requisitos:** Duas ou mais tarefas comparáveis e critérios de qualidade definidos.
+
+**Horas estimadas:** 4 horas.
+
+**Recursos:** [DORA e desenvolvimento assistido por IA](../../fichamentos/dora-state-ai-assisted-software-development/)
+e [METR com desenvolvedores experientes](../../fichamentos/metr-rct-desenvolvedores-experientes/).
+
+**Exercício prático:** Registre tempo de entendimento, escrita, revisão, testes e retrabalho
+em tarefas com e sem assistência, sem contar linhas geradas como resultado.
+
+**Critério de conclusão (DoD):** O baseline separa velocidade percebida de tempo total e
+inclui qualidade e retrabalho.
+
+**Artefato que prova o aprendizado:** Tabela comparativa com método, tarefas, métricas,
+amostra e limitações.
+
+## 60 dias — serviço LLM real
+
+### Streaming, timeout, retry e idempotência
+
+**Objetivo:** Expor um serviço LLM com comportamento previsível durante latência, falhas
+transitórias e repetição de requisições.
+
+**Pré-requisitos:** APIs HTTP, filas ou workers e métricas básicas.
+
+**Horas estimadas:** 7 horas.
+
+**Recursos:** [Construindo agentes eficazes](../../fichamentos/building-effective-agents/) e
+[o original](https://www.anthropic.com/engineering/building-effective-agents).
+
+**Exercício prático:** Implemente streaming, timeout por etapa, retry com backoff e uma
+chave de idempotência que impeça duplicar uma ação.
+
+**Critério de conclusão (DoD):** O serviço encerra chamadas presas, diferencia erro
+repetível de não repetível e documenta semântica de reprocessamento.
+
+**Artefato que prova o aprendizado:** Endpoint executável com testes de timeout, retry,
+cancelamento e repetição segura.
+
+### Structured outputs, fallback e cache de prompt
+
+**Objetivo:** Garantir contratos de saída e degradar de forma explícita quando um modelo
+ou provedor não estiver disponível.
+
+**Pré-requisitos:** Validação de schema e configuração por ambiente.
+
+**Horas estimadas:** 6 horas.
+
+**Recursos:** [Guia prático para construir agentes](../../fichamentos/practical-guide-building-agents/)
+e [o original](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf).
+
+**Exercício prático:** Valide JSON de saída, configure fallback com limites de capacidade e
+adicione cache apenas para entradas cuja resposta possa ser reutilizada com segurança.
+
+**Critério de conclusão (DoD):** Saídas inválidas não entram no domínio e fallback/cache
+deixam rastros observáveis sem misturar dados entre usuários.
+
+**Artefato que prova o aprendizado:** Contrato versionado, política de fallback e testes de
+cache hit, miss, invalidação e isolamento.
+
+### RAG sobre documentação interna
+
+**Objetivo:** Construir uma busca aumentada por geração que preserve origem, permissões e
+atualização da documentação.
+
+**Pré-requisitos:** Serviço LLM funcional, documentos de teste e controle de acesso.
+
+**Horas estimadas:** 8 horas.
+
+**Recursos:** [Geração aumentada por recuperação](../../fichamentos/retrieval-augmented-generation/)
+e [playbook de RAG](../../playbooks/rag/).
+
+**Exercício prático:** Ingerir documentos, particionar, indexar, recuperar trechos e
+responder com citações; teste documento desatualizado e usuário sem permissão.
+
+**Critério de conclusão (DoD):** Cada resposta pode apontar para evidência autorizada ou
+recusar quando não houver contexto suficiente.
+
+**Artefato que prova o aprendizado:** Pipeline mínimo com índice versionado, casos de
+permissão e relatório de recall@k.
+
+## 90 dias — operação responsável
+
+### Evals, observabilidade e regressão
+
+**Objetivo:** Transformar qualidade de saída e saúde operacional em sinais contínuos de
+uma feature de IA.
+
+**Pré-requisitos:** Serviço de 60 dias com casos reais anonimizados.
+
+**Horas estimadas:** 5 horas.
+
+**Recursos:** [Seu produto de IA precisa de avaliações](../../fichamentos/your-ai-product-needs-evals/)
+e [playbook de evals](../../playbooks/evals/).
+
+**Exercício prático:** Crie um golden dataset, uma rubrica, métricas de latência/tokens e
+um teste de regressão executado no CI.
+
+**Critério de conclusão (DoD):** Uma mudança de prompt ou modelo produz relatório
+comparável e bloqueia regressões críticas.
+
+**Artefato que prova o aprendizado:** Pipeline de avaliação com dashboard ou relatório
+versionado e decisão registrada.
+
+### Guardrails contra prompt injection
+
+**Objetivo:** Reduzir o impacto de instruções maliciosas em entradas, documentos recuperados
+e ferramentas.
+
+**Pré-requisitos:** Modelo de ameaça, permissões mínimas e validação de entradas.
+
+**Horas estimadas:** 5 horas.
+
+**Recursos:** [OWASP para aplicações com LLM](../../fichamentos/owasp-top-10-llm-applications/)
+e [playbook de segurança](../../playbooks/seguranca/).
+
+**Exercício prático:** Teste injeção direta e indireta, exfiltração de contexto e tentativa
+de ação privilegiada; aplique isolamento, validação e confirmação humana.
+
+**Critério de conclusão (DoD):** O agente não transforma texto não confiável em autorização
+e falha de forma segura quando o ataque não é resolvido.
+
+**Artefato que prova o aprendizado:** Matriz de ameaças, casos de red team e evidências de
+controles no servidor.
+
+### Custo e on-call de uma feature de IA
+
+**Objetivo:** Operar a feature com orçamento, alertas, runbook e decisão clara de plantão.
+
+**Pré-requisitos:** Métricas de tokens, latência, erros e volume de requisições.
+
+**Horas estimadas:** 5 horas.
+
+**Recursos:** [DORA e desenvolvimento assistido por IA](../../fichamentos/dora-state-ai-assisted-software-development/)
+e [playbook de custo](../../playbooks/custo/).
+
+**Exercício prático:** Defina custo por requisição, limite mensal, alertas, fallback e
+procedimento para provedor degradado ou orçamento excedido.
+
+**Critério de conclusão (DoD):** O plantonista consegue detectar, mitigar e comunicar uma
+anomalia sem procurar conhecimento oculto em uma pessoa.
+
+**Artefato que prova o aprendizado:** Dashboard, orçamento, alertas e runbook de on-call
+testado em um exercício simulado.

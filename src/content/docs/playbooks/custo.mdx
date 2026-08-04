@@ -1,0 +1,54 @@
+---
+title: Playbook de custo e TCO
+description: Estime custo mensal, cache e custo total de propriedade antes de escalar uma feature de IA.
+---
+
+import CalculadoraCusto from '../../../components/react/CalculadoraCusto';
+
+O preço por token é apenas uma parte do TCO. Inclua desenvolvimento, armazenamento,
+observabilidade, recuperação, tráfego, suporte, revisão humana, falhas e custo de
+oportunidade. Os valores da calculadora são ilustrativos e devem ser substituídos por
+preços e contratos confirmados.
+
+## 1. Defina a unidade de custo
+
+Escolha uma unidade que corresponda à decisão: requisição, tarefa concluída, usuário ativo
+ou documento processado. Registre tokens de entrada, saída, cache hit rate, volume,
+latência e taxa de erro. Não compare modelos apenas pelo preço de entrada se a saída,
+retries ou revisão mudam entre alternativas.
+
+## 2. Calcule cenário e sensibilidade
+
+Use um cenário-base, um pico e um cenário de falha. Faça variar volume, tamanho de
+contexto, proporção de cache, modelo e número de chamadas por tarefa.
+
+```python
+def custo_mensal(tokens_in, tokens_out, requisicoes,
+                 preco_in, preco_out, cache_hit=0.0, preco_cache=None):
+    preco_cache = preco_in if preco_cache is None else preco_cache
+    in_sem_cache = tokens_in * (1 - cache_hit) * preco_in
+    in_com_cache = tokens_in * cache_hit * preco_cache
+    por_requisicao = (in_sem_cache + in_com_cache) / 1_000_000
+    por_requisicao += tokens_out * preco_out / 1_000_000
+    return requisicoes * por_requisicao
+```
+
+## 3. Use cache com uma política
+
+Cache só é seguro quando a entrada, o contexto, a autorização e a validade permitem
+reutilização. Versione prompt e documentos, defina TTL e invalide quando a fonte mudar.
+Nunca compartilhe uma resposta entre tenants por acidente.
+
+## 4. Observe e alerte
+
+Emita custo estimado por requisição e por produto, além de tokens, retries, cache hit rate
+e fallback. Defina orçamento, alerta e ação de contenção antes de uma surpresa na fatura.
+
+<CalculadoraCusto client:load />
+
+## Pronto quando
+
+- Existe uma unidade de custo e um cenário de pico documentados.
+- Cache tem escopo, TTL, versão e regra de invalidação.
+- O dashboard liga consumo a uma feature, tenant ou centro de custo.
+- Há alertas e uma ação definida para exceder orçamento.

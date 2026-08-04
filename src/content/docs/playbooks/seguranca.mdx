@@ -1,0 +1,66 @@
+---
+title: Playbook de segurança para aplicações com LLM
+description: Reduza injeção de prompt, vazamento e uso indevido com controles no sistema.
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+
+<Evidencia nivel="emergente" />
+
+Leia também o [fichamento do OWASP Top 10 para aplicações com LLM](../../fichamentos/owasp-top-10-llm-applications/).
+O princípio central é não confiar em texto gerado ou recuperado como se fosse autorização.
+
+## 1. Modele as fronteiras de confiança
+
+Separe instruções do sistema, entrada da pessoa, documentos recuperados e observações de
+ferramentas. Marque cada origem e defina o que ela pode influenciar. Uma instrução em um
+documento externo deve ser tratada como dado, não como comando.
+
+```ts
+type Contexto = {
+  instrucoesSistema: string;
+  entradaUsuario: string;
+  documentos: Array<{ texto: string; origem: string; confiavel: false }>;
+};
+
+function montarContexto(ctx: Contexto): string {
+  const documentos = ctx.documentos
+    .map((doc) => `<documento origem="${doc.origem}">${doc.texto}</documento>`)
+    .join('\n');
+  return `${ctx.instrucoesSistema}\nEntrada não confiável: ${ctx.entradaUsuario}\n${documentos}`;
+}
+```
+
+## 2. Valide saída e argumentos no servidor
+
+Guardrails no prompt ajudam, mas não devem ser o único controle. Valide schema, tamanho,
+destino, identidade, autorização e efeito colateral fora do modelo. Para ações destrutivas,
+exija confirmação explícita ou revisão humana.
+
+```ts
+const ferramentasPermitidas = new Set(['consultar_pedido']);
+
+function autorizar(nome: string, usuario: { podeConsultar: boolean }) {
+  if (!ferramentasPermitidas.has(nome)) throw new Error('Ferramenta não permitida');
+  if (!usuario.podeConsultar) throw new Error('Usuário sem autorização');
+}
+```
+
+## 3. Reduza impacto
+
+Use credenciais de menor privilégio, limites por tenant, timeouts e sandbox para execução.
+Nunca inclua segredos no contexto apenas porque o modelo pode “precisar”. Registre decisões,
+mas redija dados sensíveis e defina retenção para os logs.
+
+## 4. Teste ataques recorrentes
+
+Inclua injeção direta, instrução maliciosa em documento recuperado, tentativa de exfiltrar
+contexto, chamadas fora do escopo e manipulação de saída. Faça testes antes de lançar e
+depois de trocar modelo, prompt, índice ou ferramenta.
+
+## Pronto quando
+
+- As fronteiras de confiança estão desenhadas e testadas.
+- Autorização e validação acontecem no servidor.
+- Ferramentas têm escopo mínimo, limites e confirmação para efeitos irreversíveis.
+- Existe uma suíte de ataques com triagem, correção e regressão.

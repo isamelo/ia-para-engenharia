@@ -1,0 +1,49 @@
+---
+title: Guia prático para construir agentes
+description: Recomendações da OpenAI para projetar agentes com modelos, ferramentas e controles.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: emergente
+fonte_original: https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf
+tags: [agentes, ferramentas, segurança]
+autor: OpenAI
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="emergente" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O guia organiza agentes como aplicações que usam um modelo para administrar um fluxo,
+escolher ferramentas e produzir uma resposta ou ação. Ele propõe analisar o problema em
+termos de modelo, ferramentas e instruções, com controles de segurança ao redor. O texto
+serve como mapa inicial para equipes que estão saindo de um chatbot simples.
+
+## Ideias-chave
+
+- Divida responsabilidades entre ferramentas de dados, ferramentas de ação e lógica de
+  orquestração compreensível para a equipe.
+- Escolha um modelo menor quando o caso permitir e escale apenas quando avaliações
+  demonstrarem necessidade de capacidade adicional.
+- Defina limites de autorização, trate entradas não confiáveis e mantenha uma pessoa
+  responsável por decisões de alto impacto.
+
+## O que isso muda no seu dia a dia
+
+Desenhe o contrato de cada ferramenta antes de escrever o prompt: entrada, saída,
+permissões, efeitos colaterais e erros esperados. Crie avaliações com tarefas reais e
+casos adversariais, e não apenas exemplos felizes. Planeje uma saída segura quando o
+agente não souber agir ou quando uma chamada externa falhar.
+
+## Limitações e críticas
+
+É um guia de fornecedor e combina recomendações de produto com princípios gerais, sem
+pretensão de revisão acadêmica. Algumas escolhas de arquitetura podem estar ligadas às
+APIs e modelos da OpenAI. A presença de controles no desenho não garante que o sistema
+será seguro sem testes contínuos e governança operacional.
+
+## Link para o original
+
+[A practical guide to building agents — OpenAI](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)

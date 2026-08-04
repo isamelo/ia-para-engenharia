@@ -26,8 +26,41 @@ export default defineConfig({
       customCss: ['./src/styles/global.css'],
       sidebar: [
         {
-          label: 'Início',
-          items: [{ label: 'Início', slug: 'index' }],
+          label: 'Comece aqui',
+          items: [{ label: 'Comece aqui', slug: 'comece-aqui' }],
+        },
+        {
+          label: 'Trilhas',
+          items: [
+            { label: 'Índice de trilhas', slug: 'trilhas' },
+            { autogenerate: { directory: 'trilhas' } },
+          ],
+        },
+        {
+          label: 'Playbooks',
+          items: [
+            { label: 'Índice de playbooks', slug: 'playbooks' },
+            { autogenerate: { directory: 'playbooks' } },
+          ],
+        },
+        {
+          label: 'Fichamentos',
+          items: [{ autogenerate: { directory: 'fichamentos' } }],
+        },
+        {
+          label: 'Ferramentas',
+          items: [{ label: 'Matriz de ferramentas', slug: 'ferramentas' }],
+        },
+        {
+          label: 'Biblioteca de prompts',
+          items: [{ label: 'Biblioteca de prompts', slug: 'prompts' }],
+        },
+        {
+          label: 'Referência',
+          items: [
+            { label: 'Glossário', slug: 'glossario' },
+            { label: 'Guia de tradução', slug: 'guia-de-traducao' },
+          ],
         },
         {
           label: 'Laboratório',

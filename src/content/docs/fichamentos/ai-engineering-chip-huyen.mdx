@@ -1,0 +1,50 @@
+---
+title: AI Engineering, de Chip Huyen
+description: Um mapa de decisões para construir aplicações com modelos de base.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: opiniao
+fonte_original: https://www.oreilly.com/library/view/ai-engineering/9781098166298/
+tags: [engenharia, produto, modelos]
+autor: Chip Huyen
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="opiniao" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O livro trata a construção de aplicações de IA como um campo de engenharia que combina
+modelos, dados, produto e operação. Em vez de concentrar a discussão no treinamento de
+um modelo do zero, ele percorre seleção de modelos, prompting, recuperação, ajuste,
+avaliação e implantação. A obra oferece uma visão ampla para quem precisa tomar decisões
+de sistema.
+
+## Ideias-chave
+
+- A aplicação é o produto: qualidade percebida depende de contexto, interface, dados,
+  latência, custo e mecanismos de recuperação, não só do modelo.
+- Avaliações devem acompanhar o ciclo de desenvolvimento e refletir tarefas reais e
+  critérios de negócio.
+- Escolhas como usar uma API, um modelo aberto, RAG ou ajuste fino dependem de restrições
+  de dados, desempenho, custo e operação.
+
+## O que isso muda no seu dia a dia
+
+Escreva um contrato de qualidade antes de escolher o modelo, incluindo casos de falha e
+limites de latência. Faça experimentos pequenos e comparáveis para reduzir decisões por
+moda ou demonstração. Trate observabilidade, versionamento de prompts e recuperação de
+dados como partes do produto desde o primeiro protótipo.
+
+## Limitações e críticas
+
+Este é um livro técnico de síntese e experiência, não uma revisão sistemática nem um
+resultado experimental único. O ritmo do mercado faz preços, APIs e práticas envelhecerem
+rapidamente. As recomendações precisam ser confrontadas com dados do próprio domínio,
+especialmente em ambientes regulados.
+
+## Link para o original
+
+[AI Engineering — O'Reilly](https://www.oreilly.com/library/view/ai-engineering/9781098166298/)

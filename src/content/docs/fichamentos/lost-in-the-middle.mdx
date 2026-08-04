@@ -1,0 +1,48 @@
+---
+title: Lost in the Middle
+description: Estudo sobre a queda de desempenho quando informações relevantes ficam no meio do contexto.
+tipo: fichamento
+revisado_em: 2026-08-04
+nivel_evidencia: forte
+fonte_original: https://arxiv.org/abs/2307.03172
+tags: [contexto, avaliações, RAG]
+autor: Liu et al.
+---
+
+import Evidencia from '../../../components/Evidencia.astro';
+import Frescor from '../../../components/Frescor.astro';
+
+<Evidencia nivel="forte" /> <Frescor revisadoEm={new Date('2026-08-04')} />
+
+## O que é
+
+O estudo examina como modelos de linguagem usam informações distribuídas em contextos
+longos. Em várias configurações avaliadas, a informação no começo ou no fim foi usada
+melhor do que informação equivalente posicionada no meio. A conclusão é uma advertência
+contra tratar o tamanho máximo da janela como capacidade efetiva de leitura.
+
+## Ideias-chave
+
+- Mais tokens disponíveis não significam que todas as posições receberão atenção útil.
+- A posição da evidência, a tarefa, o modelo e a distribuição do contexto influenciam o
+  resultado.
+- Avaliações de contexto longo precisam variar posição, quantidade de distração e
+  relevância, em vez de testar apenas um caso com documentos extensos.
+
+## O que isso muda no seu dia a dia
+
+Coloque instruções e evidências críticas em posições previsíveis e elimine contexto que
+não contribui para a decisão. Teste recuperação e geração com a mesma informação em
+posições diferentes. Para documentos muito longos, prefira busca, síntese por etapas ou
+seleção de trechos a simplesmente aumentar a janela.
+
+## Limitações e críticas
+
+Os resultados dependem dos modelos, tarefas e comprimentos observados no estudo, portanto
+não são uma constante de todos os sistemas atuais. Uma tarefa artificial pode não
+representar uma revisão técnica real. Mesmo assim, a fragilidade de posição é uma hipótese
+de risco barata de testar em qualquer aplicação de contexto longo.
+
+## Link para o original
+
+[Lost in the Middle: How Language Models Use Long Contexts — arXiv](https://arxiv.org/abs/2307.03172)
