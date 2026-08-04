@@ -1,0 +1,41 @@
+---
+title: Laboratório de componentes
+description: Vitrine dos componentes interativos e elementos visuais da documentação.
+---
+
+import Evidencia from '../../components/Evidencia.astro';
+import Frescor from '../../components/Frescor.astro';
+import Diagnostico from '../../components/react/Diagnostico';
+import ProgressoTrilha from '../../components/react/ProgressoTrilha';
+import CalculadoraCusto from '../../components/react/CalculadoraCusto';
+import MatrizFerramentas from '../../components/react/MatrizFerramentas';
+import BibliotecaPrompts from '../../components/react/BibliotecaPrompts';
+
+Esta página é a vitrine dos componentes interativos da documentação.
+
+## Sinais editoriais
+
+<div class="flex flex-wrap gap-3">
+  <Evidencia nivel="forte" />
+  <Frescor revisadoEm={new Date('2025-01-01')} />
+</div>
+
+## Diagnóstico
+
+<Diagnostico client:load />
+
+## Progresso
+
+<ProgressoTrilha client:load modulos={[{id: 'fundamentos', titulo: 'Fundamentos de IA'}, {id: 'avaliacao', titulo: 'Avaliação de resultados'}, {id: 'governanca', titulo: 'Governança aplicada'}]} trilhaId="demo" />
+
+## Custos
+
+<CalculadoraCusto client:load />
+
+## Ferramentas
+
+<MatrizFerramentas client:load />
+
+## Prompts
+
+<BibliotecaPrompts client:load />

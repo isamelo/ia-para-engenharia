@@ -1,0 +1,14 @@
+{
+  "atualizado_em": "2025-08-01",
+  "nota": "Dados ilustrativos iniciais. Preços e políticas mudam rapidamente; confirme sempre na fonte oficial.",
+  "ferramentas": [
+    {"nome": "GitHub Copilot", "modo": "IDE e chat", "suporte_mcp": true, "politica_treino": "Não usa dados de negócio para treinamento por padrão", "opcao_no_train_enterprise": true, "preco": "A partir de US$ 10/usuário/mês", "quando_usar": "Autocompletar e revisão dentro do fluxo do GitHub", "quando_evitar": "Quando o código não pode sair de um ambiente aprovado"},
+    {"nome": "Cursor", "modo": "IDE", "suporte_mcp": true, "politica_treino": "Políticas variam por plano e configuração", "opcao_no_train_enterprise": true, "preco": "A partir de US$ 20/usuário/mês", "quando_usar": "Edição assistida de bases de código grandes", "quando_evitar": "Quando a governança de dados não foi validada"},
+    {"nome": "Windsurf", "modo": "IDE", "suporte_mcp": true, "politica_treino": "Consulte a política do plano contratado", "opcao_no_train_enterprise": true, "preco": "A partir de US$ 15/usuário/mês", "quando_usar": "Fluxos agentivos no editor", "quando_evitar": "Em repositórios sem limites de permissão definidos"},
+    {"nome": "Claude Code", "modo": "CLI agentivo", "suporte_mcp": true, "politica_treino": "Depende do contrato e da conta usada", "opcao_no_train_enterprise": true, "preco": "Uso baseado no modelo", "quando_usar": "Automação de tarefas multi-arquivo no terminal", "quando_evitar": "Quando comandos destrutivos não têm sandbox"},
+    {"nome": "Codex", "modo": "Agente de código", "suporte_mcp": false, "politica_treino": "Depende do produto e do plano", "opcao_no_train_enterprise": true, "preco": "Variável por plano", "quando_usar": "Prototipação e manutenção orientadas por tarefas", "quando_evitar": "Quando não há revisão humana antes do merge"},
+    {"nome": "Devin", "modo": "Agente remoto", "suporte_mcp": true, "politica_treino": "Depende dos termos do contrato", "opcao_no_train_enterprise": true, "preco": "Sob consulta", "quando_usar": "Delegar tarefas bem especificadas com revisão", "quando_evitar": "Para decisões arquiteturais sem contexto documentado"},
+    {"nome": "Cline", "modo": "Extensão de IDE", "suporte_mcp": true, "politica_treino": "Usa o provedor de modelo configurado", "opcao_no_train_enterprise": false, "preco": "Gratuito; custo do modelo", "quando_usar": "Controle sobre provedor e ferramentas conectadas", "quando_evitar": "Quando credenciais locais não estão isoladas"},
+    {"nome": "Aider", "modo": "CLI", "suporte_mcp": false, "politica_treino": "Usa o provedor de modelo configurado", "opcao_no_train_enterprise": false, "preco": "Gratuito; custo do modelo", "quando_usar": "Alterações rápidas com histórico no Git", "quando_evitar": "Quando o time precisa de governança centralizada"}
+  ]
+}

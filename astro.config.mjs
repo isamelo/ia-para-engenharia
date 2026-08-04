@@ -29,6 +29,10 @@ export default defineConfig({
           label: 'Início',
           items: [{ label: 'Início', slug: 'index' }],
         },
+        {
+          label: 'Laboratório',
+          items: [{ label: 'Laboratório de componentes', slug: 'laboratorio' }],
+        },
       ],
     }),
     react(),
