@@ -709,10 +709,10 @@ function wireQuiz(m){
       const why = document.querySelector('[data-why="'+qi+'"]');
       why.style.display = "block"; why.innerHTML = "<b>Por quê:</b> " + q.why;
     });
-    const first = quizScore(m.id) === null;
+    const alreadyPassed = quizPassed(m.id);
     S.quizzes[m.id] = Math.max(quizScore(m.id) ?? 0, score); save();
     if(score === 3) grant("perfect");
-    if(first && score >= 2) addXp(XP.quiz, "Desafio superado");
+    if(!alreadyPassed && score >= 2) addXp(XP.quiz, "Desafio superado");
     tabBadge("quiz", quizScore(m.id) + "/3");
     document.getElementById("quizMsg").textContent = score + "/3 — " + (score>=2 ? "aprovado!" : "revise as explicações e tente de novo.");
     if(score >= 2 && moduleDone(m.id)){
