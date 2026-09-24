@@ -235,6 +235,11 @@ textarea:focus,input:focus,select:focus{outline:2px solid color-mix(in srgb,var(
 @media (max-width:760px){
   .caprow>span:first-child{min-width:110px}
   .tabs{overflow-x:auto}
+  .topbar{flex-wrap:wrap;gap:8px;padding:12px 16px}
+  .topbar>div:first-child{min-width:0;flex:1 1 100%}
+  .topbar h2{font-size:15px;overflow-wrap:anywhere}
+  .topbar .grow{display:none}
+  .chip{padding:4px 9px;font-size:11.5px}
   .app{grid-template-columns:1fr}
   .rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px}
   .rail .spacer,.railcard{display:none}
@@ -694,6 +699,8 @@ const KEY = "atelie-ia-proto-v2";
 const blank = () => ({
   xp: 0, lessons: {}, labs: {}, quizzes: {}, badges: [], capstone: "",
   caps: {},            /* pontos por capability */
+  credited: {},        /* fração já creditada por módulo (teto de 100%) */
+  diagCaps: {},        /* pontos vindos do diagnóstico, para refazer sem somar duas vezes */
   waived: {},          /* módulos aprovados por prova de dispensa */
   review: [],          /* fila de revisão espaçada */
   prompts: [],         /* prompts salvos pelo usuário */
@@ -769,7 +776,10 @@ function capNext(id){
 }
 function creditCaps(mid, kind, factor){
   const mod = byId(mid); if(!mod || !mod.caps) return;
-  const share = CAP_SPLIT[kind] * (factor ?? 1);
+  const used = S.credited[mid] || 0;
+  const share = Math.min(CAP_SPLIT[kind] * (factor ?? 1), 1 - used);
+  if(share <= 0) return;
+  S.credited[mid] = used + share;
   Object.entries(mod.caps).forEach(([c,v]) => { S.caps[c] = (S.caps[c]||0) + v*share; });
   save();
 }
@@ -982,13 +992,17 @@ function wireDiag(){
   document.getElementById("diagGo").onclick = () => {
     const role = (document.querySelector('input[name="role"]:checked')||{}).value || null;
     let answered = 0;
+    const pts = {};
     DIAG.forEach((d,i)=>{
       const sel = document.querySelector('input[name="d'+i+'"]:checked');
       if(!sel) return;
       answered++;
-      S.caps[d.cap] = (S.caps[d.cap]||0) + DIAG_PTS[+sel.value];
+      pts[d.cap] = (pts[d.cap]||0) + DIAG_PTS[+sel.value];
     });
     if(!answered){ toast("Responda ao menos uma pergunta", "ou pule o diagnóstico"); return; }
+    Object.entries(S.diagCaps || {}).forEach(([c,v]) => { S.caps[c] = Math.max(0, (S.caps[c]||0) - v); });
+    Object.entries(pts).forEach(([c,v]) => { S.caps[c] = (S.caps[c]||0) + v; });
+    S.diagCaps = pts;
     S.diag = { role, at: today() }; save();
     toast("Ponto de partida definido", "Seu radar já começa preenchido");
     go("home");
@@ -1698,6 +1712,7 @@ const LAB_TITLES = {
 };
 
 /* ---------------- biblioteca ---------------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
 function viewLibrary(){
   document.getElementById("crumb").textContent = "Biblioteca";
   document.getElementById("title").textContent = "Consulta rápida";
@@ -1715,20 +1730,20 @@ function viewLibrary(){
         <b style="font-size:14.5px">${g.t}</b>
         <p class="mini" style="margin:6px 0 0">${g.d}</p></div>`).join("")}</div>`;
   } else if(tab === "prompts"){
-    body = `<div class="grid" id="glist">${PROMPT_LIB.map((p,i)=>`<div class="card libitem" data-k="${(p.t+" "+p.p).toLowerCase()}">
+    body = `<div class="grid" id="glist">${PROMPT_LIB.map((p,i)=>`<div class="card libitem" data-k="${esc((p.t+" "+p.p).toLowerCase())}">
       <div class="row" style="align-items:flex-start">
-        <div><div class="eyebrow">${capName(p.cap)}</div><b style="font-size:14.5px">${p.t}</b></div>
+        <div><div class="eyebrow">${capName(p.cap)}</div><b style="font-size:14.5px">${esc(p.t)}</b></div>
         <button class="btn soft sm" style="margin-left:auto" data-copy="lib${i}">Copiar</button>
       </div>
-      <div class="out" style="margin-top:10px" id="lib${i}">${p.p}</div></div>`).join("")}</div>`;
+      <div class="out" style="margin-top:10px" id="lib${i}">${esc(p.p)}</div></div>`).join("")}</div>`;
   } else {
-    body = S.prompts.length ? `<div class="grid" id="glist">${S.prompts.map((p,i)=>`<div class="card libitem" data-k="${(p.t+" "+p.p).toLowerCase()}">
+    body = S.prompts.length ? `<div class="grid" id="glist">${S.prompts.map((p,i)=>`<div class="card libitem" data-k="${esc((p.t+" "+p.p).toLowerCase())}">
       <div class="row" style="align-items:flex-start">
-        <div><div class="eyebrow">salvo em ${p.at}${p.score!=null?" · lab "+p.score+"/100":""}</div><b style="font-size:14.5px">${p.t}</b></div>
+        <div><div class="eyebrow">salvo em ${esc(p.at)}${p.score!=null?" · lab "+p.score+"/100":""}</div><b style="font-size:14.5px">${esc(p.t)}</b></div>
         <button class="btn soft sm" style="margin-left:auto" data-copy="my${i}">Copiar</button>
         <button class="btn soft sm" data-del="${i}">Remover</button>
       </div>
-      <div class="out" style="margin-top:10px" id="my${i}">${p.p}</div></div>`).join("")}</div>`
+      <div class="out" style="margin-top:10px" id="my${i}">${esc(p.p)}</div></div>`).join("")}</div>`
       : `<div class="card"><b>Nenhum prompt salvo ainda</b><p class="mini" style="margin:6px 0 0">No laboratório de prompt, use <b>Salvar na biblioteca</b>. O que funcionou vira ativo reutilizável — seu e, depois, do time.</p></div>`;
   }
   return `<p class="muted">O que sobra depois da aula: definições, prompts prontos e os seus próprios prompts validados em laboratório.</p>
@@ -1806,8 +1821,8 @@ function viewPortfolio(){
       <div class="row" style="align-items:flex-start">
         <div style="min-width:0">
           <div class="eyebrow">${c.at} · ${c.status}</div>
-          <b style="font-size:14.5px">${c.t}</b>
-          <p class="mini" style="margin:6px 0 0">${c.d}</p>
+          <b style="font-size:14.5px">${esc(c.t)}</b>
+          <p class="mini" style="margin:6px 0 0">${esc(c.d)}</p>
         </div>
         <div style="margin-left:auto;text-align:right">
           <div class="score" style="font-size:20px">${c.horas}h</div>
