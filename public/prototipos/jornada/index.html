@@ -223,7 +223,18 @@ textarea:focus,input:focus,select:focus{outline:2px solid color-mix(in srgb,var(
   background:linear-gradient(160deg,color-mix(in srgb,var(--gold) 9%,var(--panel)),var(--panel))
 }
 .cert h2{font-size:22px;margin-bottom:6px}
+.captags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.captag{font-size:10.5px;color:var(--txt-3);border:1px solid var(--line);border-radius:99px;padding:2px 8px;background:var(--panel-2);white-space:nowrap}
+.caprow{display:flex;align-items:center;font-size:13.2px;padding:5px 0}
+.caprow>span:first-child{min-width:150px;color:var(--txt-2)}
+.caprow .bar{margin:0}
+.libitem .out{max-height:180px;overflow:auto}
+@media (max-width:980px){
+  .grid[style*="320px"],.grid[style*="300px"]{grid-template-columns:1fr !important}
+}
 @media (max-width:760px){
+  .caprow>span:first-child{min-width:110px}
+  .tabs{overflow-x:auto}
   .app{grid-template-columns:1fr}
   .rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px}
   .rail .spacer,.railcard{display:none}
@@ -240,9 +251,12 @@ textarea:focus,input:focus,select:focus{outline:2px solid color-mix(in srgb,var(
       <div class="mark">AI</div>
       <div><b>Ateliê IA</b><span>Formação</span></div>
     </div>
-    <button class="navbtn" data-nav="journey"><span class="ic">◎</span> Jornada</button>
+    <button class="navbtn" data-nav="home"><span class="ic">◉</span> Hoje <span class="tag" id="navHome"></span></button>
+    <button class="navbtn" data-nav="journey"><span class="ic">◎</span> Trilhas <span class="tag" id="navTrilhas"></span></button>
     <button class="navbtn" data-nav="labs"><span class="ic">⚗</span> Laboratórios <span class="tag" id="navLabs"></span></button>
-    <button class="navbtn" data-nav="badges"><span class="ic">✦</span> Conquistas <span class="tag" id="navBadges"></span></button>
+    <button class="navbtn" data-nav="library"><span class="ic">▤</span> Biblioteca <span class="tag" id="navLib"></span></button>
+    <button class="navbtn" data-nav="growth"><span class="ic">◠</span> Evolução</button>
+    <button class="navbtn" data-nav="portfolio"><span class="ic">◧</span> Portfólio <span class="tag" id="navCases"></span></button>
     <button class="navbtn" data-nav="profile"><span class="ic">☺</span> Perfil</button>
     <div class="spacer"></div>
     <div class="railcard">
@@ -260,7 +274,7 @@ textarea:focus,input:focus,select:focus{outline:2px solid color-mix(in srgb,var(
       </div>
       <div class="grow"></div>
       <span class="chip">⚡ <b id="chipXp">0</b> XP</span>
-      <span class="chip">🔥 <b id="chipStreak">1</b> dias</span>
+      <span class="chip">◷ <b id="chipStreak">0</b> dias seguidos</span>
       <button class="iconbtn" id="themeBtn" title="Alternar tema">◐</button>
       <button class="iconbtn" id="resetBtn" title="Reiniciar progresso">↺</button>
     </header>
@@ -285,6 +299,7 @@ const MODULES = [
     blurb: "Como um modelo de linguagem gera texto, o que ele sabe e onde ele erra por construção.",
     duration: "25 min",
     skills: ["Vocabulário", "Limites do modelo"],
+    caps: { fund: 70, critica: 20 },
     lessons: [
       {
         id: "l1", title: "Previsão de próxima palavra, não busca",
@@ -322,6 +337,7 @@ const MODULES = [
     blurb: "Papel, objetivo, contexto, formato e restrições — e um lab que pontua o seu prompt em tempo real.",
     duration: "30 min",
     skills: ["Prompting", "Especificação"],
+    caps: { prompt: 80, fund: 15 },
     lessons: [
       {
         id: "l1", title: "Os cinco blocos",
@@ -358,6 +374,7 @@ const MODULES = [
     blurb: "Lab de caça à alucinação: marque as afirmações que não podem sair sem fonte.",
     duration: "25 min",
     skills: ["Pensamento crítico", "Risco"],
+    caps: { critica: 80, gov: 30 },
     lessons: [
       {
         id: "l1", title: "Classifique o risco antes de confiar",
@@ -386,6 +403,7 @@ const MODULES = [
     blurb: "Lab de custo por tokens e casamento cenário → modelo, com orçamento mensal simulado.",
     duration: "30 min",
     skills: ["Custo", "Seleção de ferramenta"],
+    caps: { custo: 80, fund: 15 },
     lessons: [
       {
         id: "l1", title: "Token, contexto e conta no fim do mês",
@@ -418,6 +436,7 @@ const MODULES = [
     blurb: "Lab de montagem de pipeline: ordene as etapas de uma automação confiável.",
     duration: "35 min",
     skills: ["Automação", "Desenho de fluxo"],
+    caps: { fluxo: 80, gov: 20 },
     lessons: [
       {
         id: "l1", title: "Quando vale automatizar",
@@ -446,6 +465,7 @@ const MODULES = [
     blurb: "Monte a proposta de aplicação no seu próprio trabalho e receba o certificado da trilha.",
     duration: "20 min",
     skills: ["Aplicação", "Comunicação"],
+    caps: { fluxo: 25, prompt: 25, gov: 20, custo: 15 },
     lessons: [
       {
         id: "l1", title: "Do aprendizado ao caso",
@@ -464,6 +484,197 @@ const MODULES = [
   }
 ];
 
+/* ---------------- capabilities ---------------- */
+const CAPS = [
+  { id:"fund",    nome:"Fundamentos",        curto:"Fund.",   d:"Entender o que o modelo faz, o que ele sabe e onde erra." },
+  { id:"prompt",  nome:"Prompting",          curto:"Prompt",  d:"Especificar tarefas com papel, contexto, formato e restrição." },
+  { id:"critica", nome:"Verificação crítica",curto:"Crítica", d:"Separar o que pode seguir do que exige fonte primária." },
+  { id:"custo",   nome:"Custo e ferramenta", curto:"Custo",   d:"Escolher modelo pelo trabalho e prever a conta do mês." },
+  { id:"fluxo",   nome:"Automação e agentes",curto:"Fluxo",   d:"Desenhar fluxos confiáveis com validação e ponto humano." },
+  { id:"gov",     nome:"Governança e risco", curto:"Gov.",    d:"Usar dado sensível, registrar decisão e conter o agente." }
+];
+const CAP_LEVELS = [
+  { min:0,   t:"Explorador"  },
+  { min:60,  t:"Praticante"  },
+  { min:140, t:"Aplicador"   },
+  { min:240, t:"Multiplicador"}
+];
+/* peso de cada tipo de atividade dentro dos pontos de capability do módulo */
+const CAP_SPLIT = { lessons:.4, lab:.35, quiz:.25 };
+
+/* ---------------- eletivos (abrem por competência, não por posição na fila) -------- */
+const ELECTIVES = [
+  {
+    id:"e1", elective:true,
+    title:"Base de conhecimento própria (RAG)",
+    blurb:"Quando a resposta precisa vir dos seus documentos: busca, citação e o que fazer quando a busca falha.",
+    duration:"25 min",
+    skills:["RAG","Contexto"],
+    caps:{ fluxo:50, custo:35, critica:20 },
+    requires:{ caps:{ prompt:60, custo:45 } },
+    lessons:[
+      { id:"l1", title:"Por que RAG resolve o que modelo maior não resolve",
+        body:`<p>Modelo maior não conhece o seu contrato, a sua norma interna nem o chamado de ontem. RAG troca "saber" por "buscar antes de responder": recupera os trechos relevantes da sua base e os coloca no contexto, com citação de origem.</p>
+        <div class="keyline">Sinal de que você precisa de RAG: a resposta certa existe em algum documento seu e o modelo não tem como adivinhá-la.</div>
+        <ul><li>Corta custo: envia trechos, não manuais inteiros.</li><li>Cria rastro: cada afirmação aponta para um documento.</li><li>Cria um novo ponto de falha: busca ruim gera resposta ruim com fonte errada.</li></ul>` },
+      { id:"l2", title:"O que medir num sistema com busca",
+        body:`<p>Duas perguntas diferentes, duas medições diferentes: <b>o trecho certo foi recuperado?</b> e <b>a resposta usou o trecho?</b></p>
+        <ul><li>Recuperação: o documento correto aparece entre os primeiros resultados.</li><li>Fidelidade: a resposta não afirma nada fora dos trechos.</li><li>Cobertura: quantas perguntas reais a base consegue responder.</li></ul>
+        <div class="keyline">Sem citação clicável, ninguém audita. Citação é requisito, não enfeite.</div>` }
+    ],
+    lab:{ type:"match", titulo:"Diagnóstico: o que consertar em cada sintoma", items:[
+      { s:"A resposta cita um documento que não fala sobre o assunto.", ideal:"busca", why:"Sintoma de recuperação: o índice trouxe o trecho errado." },
+      { s:"O trecho certo foi recuperado, mas a resposta inventou um número.", ideal:"prompt", why:"Recuperação ok; falta instrução de fidelidade e citação obrigatória." },
+      { s:"Cada pergunta envia o manual de 300 páginas e a conta triplicou.", ideal:"custo", why:"Contexto inflado: recupere trechos em vez de mandar tudo." },
+      { s:"Metade das perguntas do time não tem resposta em lugar nenhum da base.", ideal:"base", why:"Problema de cobertura: falta conteúdo, não tecnologia." }
+    ], opts:[
+      { id:"busca", t:"Ajustar a busca (índice, chunking, reranking)" },
+      { id:"prompt",t:"Ajustar a instrução (usar só os trechos, citar fonte)" },
+      { id:"custo", t:"Reduzir o contexto enviado por chamada" },
+      { id:"base",  t:"Ampliar a base de conteúdo" }
+    ]},
+    quiz:[
+      { q:"Qual problema RAG resolve melhor que trocar por um modelo maior?", o:["Responder sobre documentos internos","Escrever com mais elegância","Reduzir a latência"], a:0,
+        why:"Conhecimento privado não está no treino de modelo nenhum." },
+      { q:"A resposta veio com citação. Isso garante correção?", o:["Sim, citação é prova","Não: é preciso conferir se o trecho citado sustenta a afirmação","Só se a fonte for externa"], a:1,
+        why:"Citar o documento errado — ou certo, mas dizendo outra coisa — é falha comum." },
+      { q:"Custo explodiu num assistente com RAG. Primeira hipótese?", o:["Trechos recuperados demais por pergunta","Modelo pequeno demais","Poucos usuários"], a:0,
+        why:"Volume de contexto por chamada é o driver dominante de custo." }
+    ]
+  },
+  {
+    id:"e2", elective:true,
+    title:"Governança, LGPD e uso seguro",
+    blurb:"Dado sensível, rastro de decisão e política de uso que o time consegue seguir de verdade.",
+    duration:"25 min",
+    skills:["Governança","LGPD"],
+    caps:{ gov:80, critica:25 },
+    requires:{ caps:{ critica:70 } },
+    lessons:[
+      { id:"l1", title:"Classificar o dado antes de classificar a ferramenta",
+        body:`<p>A pergunta não é "posso usar IA?", é "que dado vai entrar nesse prompt?". Público, interno, confidencial e pessoal exigem tratamentos diferentes — e a maior parte do risco real está em colar dado pessoal em conta pessoal.</p>
+        <ul><li><b>Público</b>: sem restrição.</li><li><b>Interno</b>: conta corporativa, sem treino sobre os dados.</li><li><b>Pessoal/sensível</b>: anonimizar ou não enviar; base legal definida.</li></ul>
+        <div class="keyline">Política que proíbe tudo é contornada em silêncio. Política boa define o caminho fácil e permitido.</div>` },
+      { id:"l2", title:"Rastro: o que registrar em cada uso relevante",
+        body:`<p>Auditoria futura pergunta o que foi enviado, o que voltou e quem aprovou. Registre prompt, versão, saída, revisor e decisão — especialmente onde a IA participou de algo que afeta pessoa ou contrato.</p>
+        <ul><li>Entregável com IA: marcar a participação e o revisor humano.</li><li>Automação: log de entrada, saída e versão do prompt.</li><li>Incidente: caminho claro para reportar resposta danosa.</li></ul>` }
+    ],
+    lab:{ type:"match", titulo:"Cada situação pede qual tratamento?", items:[
+      { s:"Colar currículos de candidatos para triagem automática.", ideal:"humano", why:"Decisão sobre pessoa: base legal, transparência e revisão humana obrigatória." },
+      { s:"Resumir um artigo público de mercado.", ideal:"livre", why:"Dado público, risco baixo, erro reversível." },
+      { s:"Analisar planilha com CPF e salário do time.", ideal:"anon", why:"Dado pessoal: anonimizar ou tratar em ambiente controlado." },
+      { s:"Gerar resposta padrão de atendimento que vai direto ao cliente.", ideal:"revisao", why:"Saída externa exige revisão e registro antes do envio." }
+    ], opts:[
+      { id:"livre",  t:"Uso livre em conta corporativa" },
+      { id:"anon",   t:"Anonimizar antes de enviar" },
+      { id:"revisao",t:"Revisão humana registrada antes do envio" },
+      { id:"humano", t:"Base legal + decisão humana documentada" }
+    ]},
+    quiz:[
+      { q:"Qual é o primeiro passo antes de escolher a ferramenta?", o:["Classificar o dado que vai entrar","Comparar preços","Medir a latência"], a:0,
+        why:"O tratamento exigido decorre da classificação do dado." },
+      { q:"Pedir ao modelo para 'esquecer' o dado colado resolve?", o:["Sim","Não: o controle acontece antes do envio","Só em contas pagas"], a:1,
+        why:"Não há garantia de remoção; o que não deveria sair, não sai." },
+      { q:"O que registrar num entregável feito com IA?", o:["Nada, é ferramenta comum","Prompt, saída, revisor e decisão","Só o nome do modelo"], a:1,
+        why:"Rastro é o que permite auditar e corrigir depois." }
+    ]
+  },
+  {
+    id:"e3", elective:true,
+    title:"Avaliação de qualidade (evals)",
+    blurb:"Como saber se mudou para melhor: conjunto de teste, critério de aceite e medição contínua.",
+    duration:"25 min",
+    skills:["Evals","Medição"],
+    caps:{ critica:50, fluxo:45 },
+    requires:{ caps:{ fluxo:55 } },
+    lessons:[
+      { id:"l1", title:"Sem conjunto de teste, toda mudança é fé",
+        body:`<p>Trocar uma palavra do prompt melhora um caso e piora três — e você não percebe. Um eval é um conjunto pequeno de casos reais com resposta esperada, rodado a cada mudança.</p>
+        <ul><li>20 a 50 casos reais já mudam a conversa.</li><li>Inclua os casos difíceis e os que já falharam em produção.</li><li>Critério de aceite explícito: o que conta como resposta boa.</li></ul>
+        <div class="keyline">Regra: nenhuma mudança de prompt em produção sem rodar o conjunto antes e depois.</div>` },
+      { id:"l2", title:"O que dá para medir automaticamente",
+        body:`<p>Nem tudo precisa de humano: formato, presença de campo obrigatório, faixa de valor e citação existente são checáveis por código. Reserve o julgamento humano para o que é realmente subjetivo — e faça-o por amostra.</p>
+        <ul><li>Automático: schema, campos, números fora da faixa, fonte inexistente.</li><li>Humano por amostra: utilidade, tom, completude.</li><li>Em produção: taxa de correção manual é o melhor termômetro.</li></ul>` }
+    ],
+    lab:{ type:"match", titulo:"Como você mediria cada requisito?", items:[
+      { s:"A saída precisa ser um JSON com os campos fornecedor, valor e vencimento.", ideal:"auto", why:"Validação de schema por código: barata e determinística." },
+      { s:"O resumo precisa ser útil para a diretoria.", ideal:"amostra", why:"Julgamento subjetivo: revisão humana por amostra." },
+      { s:"Nenhuma resposta pode citar documento inexistente.", ideal:"auto", why:"Checagem programática contra o índice de documentos." },
+      { s:"Queremos saber se a qualidade caiu depois do último ajuste.", ideal:"conjunto", why:"Rodar o conjunto de teste antes e depois da mudança." }
+    ], opts:[
+      { id:"auto",    t:"Verificação automática por código" },
+      { id:"amostra", t:"Revisão humana por amostragem" },
+      { id:"conjunto",t:"Rodar o conjunto de teste antes/depois" }
+    ]},
+    quiz:[
+      { q:"Qual o menor eval que vale a pena?", o:["Um conjunto pequeno de casos reais com resposta esperada","Um benchmark público","Opinião de três colegas"], a:0,
+        why:"Casos reais do seu processo medem o que importa para você." },
+      { q:"O que NÃO dá para automatizar bem?", o:["Validar schema JSON","Julgar utilidade do texto para a diretoria","Detectar valor fora da faixa"], a:1,
+        why:"Utilidade percebida é subjetiva: amostra humana." },
+      { q:"Melhor termômetro de qualidade em produção?", o:["Volume de uso","Taxa de correção manual das saídas","Tempo de resposta"], a:1,
+        why:"Quanto mais gente conserta na mão, pior está a saída." }
+    ]
+  }
+];
+const ALL = MODULES.concat(ELECTIVES);
+const byId = id => ALL.find(m=>m.id===id);
+
+/* ---------------- diagnóstico de entrada ---------------- */
+const ROLES = [
+  { id:"eng",  t:"Engenharia / Técnico" },
+  { id:"prod", t:"Produto / Projetos" },
+  { id:"lid",  t:"Liderança / Gestão" },
+  { id:"op",   t:"Operações / Suporte" }
+];
+const DIAG = [
+  { cap:"fund",    q:"Você consegue explicar para um colega por que um modelo inventa uma citação?",
+    o:["Não saberia explicar","Mais ou menos","Sim, com exemplo"] },
+  { cap:"prompt",  q:"Quando a resposta vem genérica, o que você faz?",
+    o:["Desisto ou reescrevo do zero","Peço de outro jeito","Corrijo o desvio e guardo o prompt que funcionou"] },
+  { cap:"critica", q:"Como você trata um número que a IA produziu?",
+    o:["Uso se parecer razoável","Confiro se for importante","Confiro sempre na fonte primária"] },
+  { cap:"custo",   q:"Você sabe estimar o custo mensal de um uso em escala?",
+    o:["Não","Sei que depende de tokens","Consigo estimar por cenário e escolher o modelo"] },
+  { cap:"fluxo",   q:"Já desenhou uma automação com passo de IA?",
+    o:["Nunca","Já usei automação sem IA","Já desenhei com validação e ponto humano"] },
+  { cap:"gov",     q:"Existe regra clara sobre que dado você pode colar?",
+    o:["Não sei","Sei mais ou menos","Sei classificar o dado e o tratamento"] }
+];
+const DIAG_PTS = [0, 20, 45];
+
+/* ---------------- biblioteca ---------------- */
+const GLOSSARY = [
+  { t:"Token",            d:"Pedaço de texto que o modelo processa e pela qual você paga. Em português, ~0,75 palavra por token." },
+  { t:"Janela de contexto",d:"Tudo que o modelo enxerga naquela chamada: instrução, histórico e anexos. Fora dela, ele não sabe." },
+  { t:"Alucinação",       d:"Saída plausível e falsa. Consequência do objetivo do modelo: prever texto provável, não verificar fato." },
+  { t:"Prompt de sistema",d:"Instrução fixa que define papel, limites e formato antes de qualquer mensagem do usuário." },
+  { t:"RAG",              d:"Recuperar trechos de uma base própria e colocá-los no contexto antes de responder, com citação." },
+  { t:"Embedding",        d:"Representação numérica de um texto usada para encontrar trechos semanticamente parecidos." },
+  { t:"Fine-tuning",      d:"Ajustar o modelo com exemplos próprios. Muda estilo e formato; raramente é a solução para conhecimento novo." },
+  { t:"Temperatura",      d:"Controle de aleatoriedade da geração. Baixa para extração e classificação; alta para brainstorming." },
+  { t:"Saída estruturada",d:"Forçar a resposta em um formato validável (JSON com schema). Requisito para automação confiável." },
+  { t:"Agente",           d:"Fluxo em que o modelo escolhe os próximos passos e usa ferramentas. Exige escopo, teto de custo e parada." },
+  { t:"Eval",             d:"Conjunto de casos com resposta esperada, rodado a cada mudança para detectar regressão." },
+  { t:"Human-in-the-loop",d:"Ponto obrigatório de revisão humana, posicionado antes da ação irreversível." },
+  { t:"Cache de prompt",  d:"Reaproveitar parte fixa do contexto entre chamadas para reduzir custo de entrada." },
+  { t:"Modelo de raciocínio", d:"Modelo que gasta mais computação por resposta para problemas difíceis. Caro para tarefa trivial." },
+  { t:"Deriva (drift)",   d:"Queda de qualidade ao longo do tempo por mudança de modelo, de dados ou de uso." }
+];
+const PROMPT_LIB = [
+  { t:"Resumo de decisão para diretoria", cap:"prompt",
+    p:"Atue como chefe de gabinete. Resuma o material abaixo em no máximo 6 bullets de decisão para a diretoria, seguidos de uma tabela (Responsável, Ação, Prazo). Use somente o que está no texto, marque com [?] o que estiver ambíguo e pergunte antes de concluir se faltar responsável." },
+  { t:"Revisão crítica de um entregável", cap:"critica",
+    p:"Você é revisor cético. Liste toda afirmação do texto abaixo que seja específica e verificável (número, data, norma, citação) e classifique cada uma como: confirmada no texto / exige fonte primária / provavelmente inventada. Não reescreva o texto." },
+  { t:"Extração estruturada para automação", cap:"fluxo",
+    p:"Extraia do documento abaixo os campos fornecedor, valor_total, moeda e vencimento. Responda apenas com JSON válido no schema indicado. Se algum campo não estiver explícito no documento, use null — nunca infira." },
+  { t:"Comparação de opções com critério explícito", cap:"custo",
+    p:"Compare as opções abaixo em uma tabela com as colunas Custo, Esforço de implantação, Risco e Quando faz sentido. Ao final, recomende uma e diga qual informação faltante mudaria sua recomendação." },
+  { t:"Explicar erro técnico para quem não é da área", cap:"fund",
+    p:"Explique o erro abaixo em 3 parágrafos curtos para um gestor sem formação técnica: o que aconteceu, qual o impacto e o que precisa ser decidido. Sem jargão; se usar um termo técnico, defina em uma linha." },
+  { t:"Checagem de uso de dado antes de enviar", cap:"gov",
+    p:"Classifique o conteúdo abaixo como público, interno, confidencial ou pessoal. Para a classificação encontrada, liste o tratamento exigido antes de enviar a um assistente de IA e aponte quais trechos precisam ser anonimizados." }
+];
+
 const BADGES = [
   { id: "first",   em: "🎯", t: "Primeiro passo",       d: "Concluiu a primeira aula" },
   { id: "prompt",  em: "✍️", t: "Prompt afiado",        d: "80+ no lab de prompt" },
@@ -471,36 +682,151 @@ const BADGES = [
   { id: "econ",    em: "💸", t: "Economista de tokens", d: "Fechou o mês dentro do orçamento" },
   { id: "flow",    em: "🔗", t: "Orquestrador",         d: "Montou o pipeline na ordem certa" },
   { id: "perfect", em: "💯", t: "Sem erro",             d: "3/3 em algum desafio" },
-  { id: "grad",    em: "🎓", t: "Formado",              d: "Concluiu a trilha inteira" }
+  { id: "grad",    em: "🎓", t: "Formado",              d: "Concluiu a trilha base" },
+  { id: "waiver",  em: "⚡", t: "Direto ao ponto",      d: "Passou em uma prova de dispensa" },
+  { id: "spec",    em: "🧭", t: "Especialista",         d: "Concluiu um módulo eletivo" },
+  { id: "review",  em: "🔁", t: "Memória treinada",     d: "Zerou a fila de revisão com 3+ itens" },
+  { id: "applied", em: "🏗️", t: "Aplicador",            d: "Registrou um caso aplicado com ganho" }
 ];
 
 /* ---------------- estado ---------------- */
-const KEY = "atelie-ia-proto-v1";
-const blank = () => ({ xp: 0, lessons: {}, labs: {}, quizzes: {}, badges: [], capstone: "" });
+const KEY = "atelie-ia-proto-v2";
+const blank = () => ({
+  xp: 0, lessons: {}, labs: {}, quizzes: {}, badges: [], capstone: "",
+  caps: {},            /* pontos por capability */
+  waived: {},          /* módulos aprovados por prova de dispensa */
+  review: [],          /* fila de revisão espaçada */
+  prompts: [],         /* prompts salvos pelo usuário */
+  cases: [],           /* portfólio de aplicação */
+  days: [],            /* dias com atividade (streak) */
+  acts: [],            /* atividades recentes: {d:"YYYY-MM-DD"} */
+  diag: null,          /* resultado do diagnóstico de entrada */
+  offset: 0            /* dias simulados, para demonstrar revisão espaçada */
+});
 let S = load();
 function load(){ try{ return Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || "{}")); }catch(e){ return blank(); } }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* relógio do protótipo: permite simular a passagem de dias na revisão espaçada */
+const DAY = 864e5;
+const now = () => Date.now() + (S.offset||0)*DAY;
+const today = () => new Date(now()).toISOString().slice(0,10);
 
 const lessonDone = (m,l) => !!S.lessons[m+"."+l];
 const labScore   = m => S.labs[m] ?? null;
 const quizScore  = m => S.quizzes[m] ?? null;
 const labDone    = m => labScore(m) !== null;
 const quizPassed = m => (quizScore(m) ?? -1) >= 2;
+const waived     = m => !!S.waived[m];
 function moduleDone(m){
-  const mod = MODULES.find(x=>x.id===m);
+  if(waived(m)) return true;
+  const mod = byId(m);
   return mod.lessons.every(l=>lessonDone(m,l.id)) && labDone(m) && quizPassed(m);
 }
-function unlocked(i){ return i===0 || moduleDone(MODULES[i-1].id); }
 function moduleProgress(m){
-  const mod = MODULES.find(x=>x.id===m);
+  const mod = byId(m);
+  if(waived(m)) return { done: mod.lessons.length+2, total: mod.lessons.length+2, pct: 100 };
   const total = mod.lessons.length + 2;
   const done = mod.lessons.filter(l=>lessonDone(m,l.id)).length + (labDone(m)?1:0) + (quizPassed(m)?1:0);
   return { done, total, pct: Math.round(done/total*100) };
 }
+
+/* ---- desbloqueio: sequência na trilha base, capability nos eletivos ---- */
+function requirement(mod){
+  if(mod.requires && mod.requires.caps){
+    return Object.entries(mod.requires.caps)
+      .map(([c,v]) => capName(c) + " " + v + " pts")
+      .join(" + ");
+  }
+  const i = MODULES.indexOf(mod);
+  return i > 0 ? "concluir " + MODULES[i-1].title : "";
+}
+function unlockedM(mod){
+  if(mod.requires){
+    const r = mod.requires;
+    if(r.modules && !r.modules.every(moduleDone)) return false;
+    if(r.caps && !Object.entries(r.caps).every(([c,v]) => capPoints(c) >= v)) return false;
+    return true;
+  }
+  const i = MODULES.indexOf(mod);
+  return i === 0 || moduleDone(MODULES[i-1].id);
+}
+const unlocked = i => unlockedM(MODULES[i]);
+
+/* ---- capabilities ---- */
+const capName   = id => (CAPS.find(c=>c.id===id)||{}).nome || id;
+const capPoints = id => Math.round(S.caps[id] || 0);
+function capMax(id){ return ALL.reduce((s,m)=> s + (m.caps[id]||0), 0) + 45; }
+function capLevel(id){
+  const p = capPoints(id);
+  let lv = CAP_LEVELS[0];
+  CAP_LEVELS.forEach(l => { if(p >= l.min) lv = l; });
+  return lv;
+}
+function capNext(id){
+  const p = capPoints(id);
+  return CAP_LEVELS.find(l => l.min > p) || null;
+}
+function creditCaps(mid, kind, factor){
+  const mod = byId(mid); if(!mod || !mod.caps) return;
+  const share = CAP_SPLIT[kind] * (factor ?? 1);
+  Object.entries(mod.caps).forEach(([c,v]) => { S.caps[c] = (S.caps[c]||0) + v*share; });
+  save();
+}
+
+/* ---- atividade, streak e metas ---- */
+function logActivity(){
+  const d = today();
+  if(!S.days.includes(d)) S.days.push(d);
+  S.acts.push({ d });
+  if(S.acts.length > 400) S.acts = S.acts.slice(-400);
+  save();
+}
+function streak(){
+  if(!S.days.length) return 0;
+  const set = new Set(S.days);
+  let n = 0, cur = new Date(now());
+  for(;;){
+    const k = cur.toISOString().slice(0,10);
+    if(set.has(k)) n++; else if(n > 0 || k !== today()) break;
+    cur = new Date(cur.getTime() - DAY);
+    if(n > 400) break;
+  }
+  return n;
+}
+function weekActs(){
+  const limit = now() - 7*DAY;
+  return S.acts.filter(a => new Date(a.d + "T12:00:00Z").getTime() >= limit).length;
+}
+const WEEK_GOAL = 5;
+
+/* ---- revisão espaçada ---- */
+const SPACING = [1, 3, 7];
+function scheduleReview(mid, qi){
+  const k = mid + "." + qi;
+  if(S.review.some(r=>r.k===k)) return;
+  S.review.push({ k, mid, qi, due: now(), streak: 0 });
+  save();
+}
+const dueReviews = () => S.review.filter(r => r.due <= now());
+function answerReview(r, correct){
+  const idx = S.review.findIndex(x=>x.k===r.k);
+  if(idx < 0) return;
+  if(correct){
+    const st = S.review[idx].streak + 1;
+    if(st >= 2){ S.review.splice(idx,1); }
+    else { S.review[idx].streak = st; S.review[idx].due = now() + SPACING[st-1]*DAY; }
+  } else {
+    S.review[idx].streak = 0;
+    S.review[idx].due = now() + SPACING[0]*DAY;
+  }
+  save();
+}
+
 function levelOf(xp){ let lv=1; LEVELS.forEach((t,i)=>{ if(xp>=t) lv=i+1; }); return Math.min(lv, LEVELS.length); }
 
 function addXp(n, label){
-  S.xp += n; save(); renderChrome();
+  S.xp += n; logActivity(); save(); renderChrome();
   toast("+" + n + " XP", label);
 }
 function grant(id){
@@ -522,6 +848,12 @@ function toast(t, s){
 
 /* ---------------- chrome ---------------- */
 function renderChrome(){
+  document.getElementById("chipStreak").textContent = streak();
+  const due = dueReviews().length;
+  document.getElementById("navHome").textContent = due ? due + " revisão" + (due>1?"ões":"") : "";
+  document.getElementById("navTrilhas").textContent = ALL.filter(m=>moduleDone(m.id)).length + "/" + ALL.length;
+  document.getElementById("navLib").textContent = (GLOSSARY.length + PROMPT_LIB.length + S.prompts.length) + "";
+  document.getElementById("navCases").textContent = S.cases.length ? String(S.cases.length) : "";
   const lv = levelOf(S.xp), next = LEVELS[lv] ?? null, base = LEVELS[lv-1] ?? 0;
   const pct = next === null ? 100 : Math.round((S.xp-base)/(next-base)*100);
   document.getElementById("railLevel").textContent = "Nível " + lv;
@@ -530,14 +862,13 @@ function renderChrome(){
   document.getElementById("railNext").textContent = next === null
     ? "Nível máximo alcançado" : "Faltam " + (next - S.xp) + " XP para o nível " + (lv+1);
   document.getElementById("chipXp").textContent = S.xp;
-  document.getElementById("navBadges").textContent = S.badges.length + "/" + BADGES.length;
-  const labs = MODULES.filter(m=>labDone(m.id)).length;
-  document.getElementById("navLabs").textContent = labs + "/" + MODULES.length;
+  const labs = ALL.filter(m=>labDone(m.id)).length;
+  document.getElementById("navLabs").textContent = labs + "/" + ALL.length;
   document.querySelectorAll(".navbtn").forEach(b=>b.setAttribute("aria-current", String(b.dataset.nav === route.name)));
 }
 
 /* ---------------- roteamento ---------------- */
-let route = { name: "journey", mod: null, tab: "lessons" };
+let route = { name: "home", mod: null, tab: "lessons" };
 function go(name, mod, tab){
   route = { name, mod: mod ?? null, tab: tab ?? "lessons" };
   window.scrollTo({top:0,behavior:"instant"});
@@ -549,80 +880,274 @@ document.getElementById("themeBtn").onclick = () => {
   document.documentElement.setAttribute("data-theme", cur);
 };
 document.getElementById("resetBtn").onclick = () => {
-  if(confirm("Reiniciar todo o progresso deste protótipo?")){ S = blank(); save(); go("journey"); }
+  if(confirm("Reiniciar todo o progresso deste protótipo?")){ S = blank(); save(); go("home"); }
 };
 
 function render(){
   const v = document.getElementById("view");
-  if(route.name === "journey") v.innerHTML = viewJourney();
+  if(!S.diag && route.name !== "diag") route = { name:"diag", mod:null, tab:"lessons" };
+  if(route.name === "diag"){ v.innerHTML = viewDiag(); wireDiag(); }
+  else if(route.name === "home"){ v.innerHTML = viewHome(); wireHome(); }
+  else if(route.name === "journey") v.innerHTML = viewJourney();
   else if(route.name === "module"){ v.innerHTML = viewModule(); wireModule(); }
   else if(route.name === "labs") v.innerHTML = viewLabs();
-  else if(route.name === "badges") v.innerHTML = viewBadges();
-  else v.innerHTML = viewProfile();
+  else if(route.name === "library"){ v.innerHTML = viewLibrary(); wireLibrary(); }
+  else if(route.name === "growth") v.innerHTML = viewGrowth();
+  else if(route.name === "portfolio"){ v.innerHTML = viewPortfolio(); wirePortfolio(); }
+  else { v.innerHTML = viewProfile(); wireProfile(); }
   renderChrome();
   v.querySelectorAll("[data-goto]").forEach(el => el.onclick = () => {
     const [n,m,t] = el.dataset.goto.split(":"); go(n,m,t);
   });
 }
 
-/* ---------------- jornada ---------------- */
+/* ---------------- trilhas ---------------- */
+function modCard(m, i, opts){
+  const open = unlockedM(m), done = moduleDone(m.id), p = moduleProgress(m.id);
+  const state = done ? "done" : open ? "open" : "locked";
+  const pill = done ? '<span class="pill done">'+(waived(m.id)?"dispensado":"concluído")+'</span>'
+    : open ? '<span class="pill open">disponível</span>'
+    : '<span class="pill locked">bloqueado</span>';
+  const req = !open ? '<div class="mini" style="margin-top:8px">Requisito: <b>'+requirement(m)+'</b></div>' : "";
+  const capTags = Object.entries(m.caps).map(([c,v]) => '<span class="captag">'+capName(c)+' +'+v+'</span>').join("");
+  return `<div class="mod ${state}">
+    <div class="dot">${done ? "✓" : (opts && opts.mark) || i+1}</div>
+    <button class="modcard" ${open ? 'data-goto="module:'+m.id+':lessons"' : "disabled"}>
+      <div style="min-width:0">
+        <h3>${m.title} ${pill}</h3>
+        <p>${m.blurb}</p>
+        ${open ? '<div class="modprog"><i style="width:'+p.pct+'%"></i></div><div class="mini" style="margin-top:6px">'+p.done+' de '+p.total+' etapas · '+m.duration+'</div>' : req}
+        <div class="captags">${capTags}</div>
+      </div>
+      <div class="meta">
+        <div class="mini" style="color:var(--txt-2)">${open ? (done ? "revisar →" : "continuar →") : ""}</div>
+      </div>
+    </button>
+  </div>`;
+}
 function viewJourney(){
   const doneCount = MODULES.filter(m=>moduleDone(m.id)).length;
-  document.getElementById("crumb").textContent = "Jornada";
-  document.getElementById("title").textContent = "Trilha de capacitação em IA";
-  const cards = MODULES.map((m,i)=>{
-    const open = unlocked(i), done = moduleDone(m.id), p = moduleProgress(m.id);
-    const state = done ? "done" : open ? "open" : "locked";
-    const pill = done ? '<span class="pill done">concluído</span>'
-      : open ? '<span class="pill open">disponível</span>'
-      : '<span class="pill locked">🔒 bloqueado</span>';
-    const req = !open ? '<div class="mini" style="margin-top:8px">Conclua <b>'+MODULES[i-1].title+'</b> para liberar</div>' : "";
-    return `<div class="mod ${state}">
-      <div class="dot">${done ? "✓" : i+1}</div>
-      <button class="modcard" ${open ? 'data-goto="module:'+m.id+':lessons"' : "disabled"}>
-        <div style="min-width:0">
-          <h3>${m.title} ${pill}</h3>
-          <p>${m.blurb}</p>
-          ${open ? '<div class="modprog"><i style="width:'+p.pct+'%"></i></div><div class="mini" style="margin-top:6px">'+p.done+' de '+p.total+' etapas · '+m.duration+'</div>' : req}
-        </div>
-        <div class="meta">
-          <div class="mini">${m.skills.join(" · ")}</div>
-          <div class="mini" style="margin-top:6px;color:var(--txt-2)">${open ? (done ? "revisar →" : "continuar →") : ""}</div>
-        </div>
-      </button>
-    </div>`;
-  }).join("");
+  const specDone = ELECTIVES.filter(m=>moduleDone(m.id)).length;
+  document.getElementById("crumb").textContent = "Trilhas";
+  document.getElementById("title").textContent = "Trilha base e especializações";
+  const base = MODULES.map((m,i)=>modCard(m,i)).join("");
+  const elet = ELECTIVES.map((m,i)=>modCard(m,i,{mark:"◆"})).join("");
 
   return `<section class="hero">
       <div>
-        <div class="eyebrow">Trilha base · 2h45</div>
+        <div class="eyebrow">Trilha base · 2h45 · + especializações</div>
         <h1>Da curiosidade ao uso responsável de IA no trabalho</h1>
-        <p>Seis módulos com aula curta, laboratório prático e desafio. Cada módulo abre quando o anterior é concluído — você avança pela evidência de prática, não pelo relógio.</p>
+        <p>A trilha base abre em sequência: cada módulo exige aulas, laboratório avaliado e desafio. As especializações abrem por <b>competência acumulada</b> — não importa a ordem, importa o nível que você já demonstrou.</p>
       </div>
       <div class="stats">
-        <div class="stat"><b>${doneCount}/${MODULES.length}</b><span>Módulos</span></div>
+        <div class="stat"><b>${doneCount}/${MODULES.length}</b><span>Base</span></div>
+        <div class="stat"><b>${specDone}/${ELECTIVES.length}</b><span>Eletivos</span></div>
         <div class="stat"><b>${S.xp}</b><span>XP</span></div>
-        <div class="stat"><b>${S.badges.length}</b><span>Conquistas</span></div>
       </div>
     </section>
-    <div class="path">${cards}</div>`;
+    <div class="eyebrow" style="margin-bottom:10px">Trilha base</div>
+    <div class="path">${base}</div>
+    <div class="sep" style="margin:24px 0 18px"></div>
+    <div class="eyebrow" style="margin-bottom:4px">Especializações · liberadas por competência</div>
+    <p class="mini" style="margin:0 0 12px">Você não precisa terminar a base para abrir um eletivo: basta atingir os pontos de capability exigidos.</p>
+    <div class="path">${elet}</div>`;
+}
+
+/* ---------------- diagnóstico de entrada ---------------- */
+function viewDiag(){
+  document.getElementById("crumb").textContent = "Diagnóstico";
+  document.getElementById("title").textContent = "Onde você está hoje";
+  const qs = DIAG.map((d,i)=>`<div class="card" style="margin-bottom:12px">
+      <div class="eyebrow">${capName(d.cap)}</div>
+      <h3 style="font-size:15px;margin:6px 0 12px">${d.q}</h3>
+      ${d.o.map((o,oi)=>`<label class="opt"><input type="radio" name="d${i}" value="${oi}"><span>${o}</span></label>`).join("")}
+    </div>`).join("");
+  return `<section class="hero">
+      <div>
+        <div class="eyebrow">Passo 1 de 1 · 2 minutos</div>
+        <h1>Antes de começar: o que você já sabe</h1>
+        <p>Seis perguntas definem seu ponto de partida em cada competência e a ordem recomendada. Nada aqui bloqueia conteúdo — só evita que você percorra o que já domina.</p>
+      </div>
+    </section>
+    <div class="card" style="margin-bottom:14px">
+      <div class="eyebrow">Seu papel</div>
+      <div class="row" style="margin-top:10px">${ROLES.map(r=>`<label class="opt" style="margin:0"><input type="radio" name="role" value="${r.id}"><span>${r.t}</span></label>`).join("")}</div>
+    </div>
+    ${qs}
+    <div class="row"><button class="btn" id="diagGo">Ver meu ponto de partida</button>
+      <button class="btn soft sm" id="diagSkip">Pular diagnóstico</button></div>`;
+}
+function wireDiag(){
+  document.getElementById("diagSkip").onclick = () => { S.diag = { role:null, skipped:true }; save(); go("home"); };
+  document.getElementById("diagGo").onclick = () => {
+    const role = (document.querySelector('input[name="role"]:checked')||{}).value || null;
+    let answered = 0;
+    DIAG.forEach((d,i)=>{
+      const sel = document.querySelector('input[name="d'+i+'"]:checked');
+      if(!sel) return;
+      answered++;
+      S.caps[d.cap] = (S.caps[d.cap]||0) + DIAG_PTS[+sel.value];
+    });
+    if(!answered){ toast("Responda ao menos uma pergunta", "ou pule o diagnóstico"); return; }
+    S.diag = { role, at: today() }; save();
+    toast("Ponto de partida definido", "Seu radar já começa preenchido");
+    go("home");
+  };
+}
+
+/* ---------------- Hoje ---------------- */
+function nextAction(){
+  const due = dueReviews().length;
+  if(due) return { t:"Revisar "+due+" item"+(due>1?"s":""), d:"Questões que você errou voltaram para fixar.", go:"home", btn:"Revisar agora", anchor:true };
+  const open = ALL.filter(m=>unlockedM(m) && !moduleDone(m.id));
+  const m = open[0];
+  if(!m){
+    const locked = ELECTIVES.filter(x=>!unlockedM(x));
+    if(locked.length) return { t:"Destravar "+locked[0].title, d:"Requisito: "+requirement(locked[0])+". Refaça laboratórios para somar pontos.", go:"growth", btn:"Ver minhas competências" };
+    return { t:"Registrar um caso aplicado", d:"Você concluiu o conteúdo. O próximo ganho vem do uso real.", go:"portfolio", btn:"Abrir portfólio" };
+  }
+  const p = moduleProgress(m.id);
+  const falta = !m.lessons.every(l=>lessonDone(m.id,l.id)) ? "lessons" : !labDone(m.id) ? "lab" : "quiz";
+  const nome = falta === "lessons" ? "continuar as aulas" : falta === "lab" ? "fazer o laboratório" : "enfrentar o desafio";
+  return { t:m.title, d:"Próximo passo: "+nome+" · "+p.done+"/"+p.total+" etapas", goMod:[m.id, falta], btn:"Continuar →" };
+}
+function radarSvg(size){
+  const r = size/2 - 26, cx = size/2, cy = size/2, n = CAPS.length;
+  const pt = (i, f) => {
+    const ang = -Math.PI/2 + i*2*Math.PI/n;
+    return [cx + Math.cos(ang)*r*f, cy + Math.sin(ang)*r*f];
+  };
+  const ring = f => CAPS.map((_,i)=>pt(i,f).join(",")).join(" ");
+  const vals = CAPS.map(c => Math.max(.04, Math.min(1, capPoints(c.id)/capMax(c.id))));
+  const poly = CAPS.map((_,i)=>pt(i,vals[i]).join(",")).join(" ");
+  const axes = CAPS.map((_,i)=>{ const [x,y]=pt(i,1); return '<line x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/>'; }).join("");
+  const labels = CAPS.map((c,i)=>{
+    const [x,y] = pt(i, 1.19);
+    return '<text x="'+x+'" y="'+y+'" font-size="10.5" fill="var(--txt-3)" text-anchor="middle" dominant-baseline="middle">'+c.curto+'</text>';
+  }).join("");
+  return `<svg viewBox="0 0 ${size} ${size}" width="100%" height="${size}" role="img" aria-label="Radar de competências">
+    ${[1,.75,.5,.25].map(f=>'<polygon points="'+ring(f)+'" fill="none" stroke="var(--line-soft)" stroke-width="1"/>').join("")}
+    ${axes}
+    <polygon points="${poly}" fill="color-mix(in srgb,var(--accent) 28%,transparent)" stroke="var(--accent)" stroke-width="2"/>
+    ${CAPS.map((_,i)=>{const [x,y]=pt(i,vals[i]);return '<circle cx="'+x+'" cy="'+y+'" r="3" fill="var(--accent)"/>';}).join("")}
+    ${labels}
+  </svg>`;
+}
+function viewHome(){
+  document.getElementById("crumb").textContent = "Hoje";
+  document.getElementById("title").textContent = "Seu plano de hoje";
+  const a = nextAction();
+  const due = dueReviews();
+  const w = weekActs(), goalPct = Math.min(100, Math.round(w/WEEK_GOAL*100));
+  const horas = S.cases.reduce((s,c)=>s+(+c.horas||0),0);
+  const role = S.diag && S.diag.role ? (ROLES.find(r=>r.id===S.diag.role)||{}).t : null;
+
+  const capRows = CAPS.map(c=>{
+    const p = capPoints(c.id), pct = Math.min(100, Math.round(p/capMax(c.id)*100));
+    return `<div class="caprow"><span>${c.nome}</span>
+      <div class="bar" style="flex:1;margin:0 10px"><i style="width:${pct}%"></i></div>
+      <b class="mini" style="color:var(--txt-2)">${capLevel(c.id).t}</b></div>`;
+  }).join("");
+
+  const reviewBox = due.length ? `<div class="card" id="reviewBox" style="border-color:color-mix(in srgb,var(--warn) 40%,var(--line))">
+      <div class="eyebrow" style="color:var(--warn)">Revisão espaçada · ${due.length} pendente${due.length>1?"s":""}</div>
+      <h3 style="margin:6px 0 10px;font-size:16px">Questões que você errou voltaram</h3>
+      <div id="revArea"></div>
+    </div>` : `<div class="card">
+      <div class="eyebrow">Revisão espaçada</div>
+      <h3 style="margin:6px 0 6px;font-size:16px">Nada para revisar agora</h3>
+      <p class="mini" style="margin:0">Cada erro em desafio volta em 1, 3 e 7 dias até você acertar duas vezes seguidas. Itens agendados: <b>${S.review.length}</b>.</p>
+      ${S.review.length ? '<div class="row" style="margin-top:10px"><button class="btn soft sm" id="skipDay">Simular +1 dia</button></div>' : ""}
+    </div>`;
+
+  return `<section class="hero">
+      <div>
+        <div class="eyebrow">${role ? role + " · " : ""}Nível ${levelOf(S.xp)} · ${streak()} dia${streak()===1?"":"s"} seguidos</div>
+        <h1>${a.t}</h1>
+        <p>${a.d}</p>
+        <div class="row" style="margin-top:14px">
+          <button class="btn" ${a.goMod ? 'data-goto="module:'+a.goMod[0]+':'+a.goMod[1]+'"' : a.anchor ? 'id="toReview"' : 'data-goto="'+a.go+'::"'}>${a.btn}</button>
+          <button class="btn soft" data-goto="journey::">Ver todas as trilhas</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>${w}/${WEEK_GOAL}</b><span>Meta semanal</span></div>
+        <div class="stat"><b>${horas||0}h</b><span>Ganho/semana</span></div>
+      </div>
+    </section>
+    <div class="grid" style="grid-template-columns:1fr 320px">
+      <div class="grid" style="gap:14px">
+        ${reviewBox}
+        <div class="card">
+          <div class="eyebrow">Meta da semana</div>
+          <div class="row" style="margin-top:8px"><b style="font-size:20px">${w}</b><span class="mini">de ${WEEK_GOAL} atividades concluídas</span></div>
+          <div class="bar"><i style="width:${goalPct}%"></i></div>
+          <p class="mini" style="margin:8px 0 0">Aula, laboratório, desafio ou revisão contam como atividade.</p>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Competências</div>
+          <div style="margin-top:10px">${capRows}</div>
+          <div class="row" style="margin-top:12px"><button class="btn soft sm" data-goto="growth::">Ver detalhe da evolução →</button></div>
+        </div>
+      </div>
+      <div class="card" style="align-self:start">
+        <div class="eyebrow">Radar</div>
+        ${radarSvg(240)}
+        <div class="mini" style="text-align:center">Área preenchida = capability demonstrada em prática avaliada.</div>
+      </div>
+    </div>`;
+}
+function wireHome(){
+  const skip = document.getElementById("skipDay");
+  if(skip) skip.onclick = () => { S.offset = (S.offset||0) + 1; save(); toast("+1 dia simulado", "Revisões agendadas podem ter vencido"); go("home"); };
+  const toRev = document.getElementById("toReview");
+  if(toRev) toRev.onclick = () => document.getElementById("reviewBox").scrollIntoView({behavior:"smooth"});
+  drawReview();
+}
+function drawReview(){
+  const area = document.getElementById("revArea");
+  if(!area) return;
+  const due = dueReviews();
+  if(!due.length){ go("home"); return; }
+  const r = due[0], m = byId(r.mid), q = m.quiz[r.qi];
+  area.innerHTML = `<div class="mini">${m.title}</div>
+    <h4 style="margin:8px 0 12px;font-size:14.5px">${q.q}</h4>
+    ${q.o.map((o,oi)=>`<label class="opt" data-ro="${oi}"><input type="radio" name="rev" value="${oi}"><span>${o}</span></label>`).join("")}
+    <div class="row" style="margin-top:10px"><button class="btn sm" id="revGo">Responder</button>
+      <span class="mini" id="revMsg">${due.length} na fila · acerte 2 vezes seguidas para sair</span></div>`;
+  document.getElementById("revGo").onclick = () => {
+    const sel = document.querySelector('input[name="rev"]:checked');
+    if(!sel){ toast("Escolha uma opção", ""); return; }
+    const ok = +sel.value === q.a;
+    document.querySelector('[data-ro="'+q.a+'"]').classList.add("correct");
+    if(!ok) document.querySelector('[data-ro="'+sel.value+'"]').classList.add("wrong");
+    const total = S.review.length;
+    answerReview(r, ok);
+    if(ok && S.review.length === 0 && total >= 3) grant("review");
+    if(ok) addXp(5, "Revisão correta"); else { logActivity(); renderChrome(); }
+    document.getElementById("revMsg").innerHTML = "<b>" + (ok ? "Certo." : "Ainda não.") + "</b> " + q.why;
+    document.getElementById("revGo").disabled = true;
+    setTimeout(()=>go("home"), 1600);
+  };
 }
 
 /* ---------------- módulo ---------------- */
-function mod(){ return MODULES.find(m=>m.id===route.mod); }
+function mod(){ return byId(route.mod); }
 
 function viewModule(){
   const m = mod(), i = MODULES.indexOf(m), p = moduleProgress(m.id);
-  document.getElementById("crumb").textContent = "Jornada · Módulo " + (i+1);
+  document.getElementById("crumb").textContent = m.elective ? "Trilhas · Especialização" : "Trilhas · Módulo " + (i+1);
   document.getElementById("title").textContent = m.title;
   const tabs = [
     ["lessons", "Aulas", m.lessons.filter(l=>lessonDone(m.id,l.id)).length + "/" + m.lessons.length],
     ["lab", "Laboratório", labDone(m.id) ? labScore(m.id) + "/100" : "—"],
-    ["quiz", "Desafio", quizScore(m.id) !== null ? quizScore(m.id) + "/3" : "—"]
+    ["quiz", "Desafio", quizScore(m.id) !== null ? quizScore(m.id) + "/3" : "—"],
+    ["waiver", "Dispensa", waived(m.id) ? "aprovada" : "—"]
   ].map(([k,t,b]) => `<button class="tab" role="tab" data-tab="${k}" aria-selected="${route.tab===k}">${t}<span class="badge">${b}</span></button>`).join("");
 
   let body = "";
-  if(route.tab === "lessons") body = m.lessons.map(l => `
+  if(route.tab === "waiver") body = waiverHtml(m);
+  else if(route.tab === "lessons") body = m.lessons.map(l => `
     <details class="lesson ${lessonDone(m.id,l.id)?"done":""}" ${lessonDone(m.id,l.id)?"":""}>
       <summary><span class="tick">✓</span>${l.title}<span style="margin-left:auto" class="mini">${lessonDone(m.id,l.id)?"concluída":"+"+XP.lesson+" XP"}</span></summary>
       <div class="body">${l.body}
@@ -634,20 +1159,24 @@ function viewModule(){
   else if(route.tab === "lab") body = LABS[m.lab.type](m);
   else body = quizHtml(m);
 
-  const next = MODULES[i+1];
+  const next = m.elective ? ELECTIVES.find(x=>unlockedM(x) && !moduleDone(x.id) && x.id!==m.id) : MODULES[i+1];
+  const newlyOpen = ELECTIVES.filter(x=>unlockedM(x) && !moduleDone(x.id));
   const footer = moduleDone(m.id) ? `<div class="card" style="margin-top:22px;border-color:color-mix(in srgb,var(--accent-2) 40%,var(--line))">
       <div class="row"><div>
         <div class="eyebrow" style="color:var(--accent-2)">Módulo concluído</div>
-        <h3 style="margin-top:4px">${next ? "Você liberou: " + next.title : "Trilha completa — certificado disponível"}</h3>
+        <h3 style="margin-top:4px">${next ? "Você liberou: " + next.title : "Conteúdo concluído — veja seu certificado"}</h3>
+        ${newlyOpen.length ? '<p class="mini" style="margin:6px 0 0">Especializações abertas pelo seu nível de competência: '+newlyOpen.map(x=>x.title).join(" · ")+'</p>' : ""}
       </div>
       <div style="margin-left:auto">${next
         ? '<button class="btn" data-goto="module:'+next.id+':lessons">Ir para o próximo →</button>'
         : '<button class="btn" data-goto="profile::">Ver certificado →</button>'}</div></div></div>` : "";
 
+  const capTags = Object.entries(m.caps).map(([c,v]) => '<span class="captag">'+capName(c)+' +'+v+'</span>').join("");
   return `<div class="row" style="justify-content:space-between">
-      <button class="btn soft sm" data-goto="journey::">← Trilha</button>
-      <div class="mini">${p.done}/${p.total} etapas · ${m.duration} · ${m.skills.join(" · ")}</div>
+      <button class="btn soft sm" data-goto="journey::">← Trilhas</button>
+      <div class="mini">${p.done}/${p.total} etapas · ${m.duration}</div>
     </div>
+    <div class="captags" style="margin-top:10px">${capTags}</div>
     <div class="tabs" role="tablist">${tabs}</div>
     <div id="tabbody">${body}</div>
     ${footer}`;
@@ -658,10 +1187,12 @@ function wireModule(){
   document.querySelectorAll(".tab").forEach(t => t.onclick = () => go("module", m.id, t.dataset.tab));
   document.querySelectorAll("[data-lesson]").forEach(b => b.onclick = () => {
     S.lessons[m.id + "." + b.dataset.lesson] = true; save();
+    creditCaps(m.id, "lessons", 1/m.lessons.length);
     addXp(XP.lesson, "Aula concluída");
     grant("first");
     go("module", m.id, "lessons");
   });
+  if(route.tab === "waiver") wireWaiver(m);
   if(route.tab === "lab") LAB_WIRE[m.lab.type](m);
   if(route.tab === "quiz") wireQuiz(m);
   document.querySelectorAll("[data-goto]").forEach(el => el.onclick = () => {
@@ -676,7 +1207,13 @@ function tabBadge(key, text){
 function finishLab(m, score, badge){
   const prev = labScore(m.id);
   S.labs[m.id] = Math.max(prev ?? 0, score); save();
-  if(prev === null) addXp(XP.lab, "Laboratório concluído"); else renderChrome();
+  if(prev === null){
+    creditCaps(m.id, "lab", score/100);
+    addXp(XP.lab, "Laboratório concluído");
+  } else if(score > prev){
+    creditCaps(m.id, "lab", (score-prev)/100);
+    renderChrome();
+  } else renderChrome();
   tabBadge("lab", labScore(m.id) + "/100");
   if(badge) grant(badge);
 }
@@ -709,17 +1246,77 @@ function wireQuiz(m){
       const why = document.querySelector('[data-why="'+qi+'"]');
       why.style.display = "block"; why.innerHTML = "<b>Por quê:</b> " + q.why;
     });
+    m.quiz.forEach((q,qi)=>{
+      const sel = document.querySelector('input[name="q'+qi+'"]:checked');
+      if(!sel || +sel.value !== q.a) scheduleReview(m.id, qi);
+    });
     const alreadyPassed = quizPassed(m.id);
-    S.quizzes[m.id] = Math.max(quizScore(m.id) ?? 0, score); save();
+    const prev = quizScore(m.id) ?? 0;
+    S.quizzes[m.id] = Math.max(prev, score); save();
+    if(score > prev) creditCaps(m.id, "quiz", (score-prev)/3);
     if(score === 3) grant("perfect");
-    if(!alreadyPassed && score >= 2) addXp(XP.quiz, "Desafio superado");
+    if(!alreadyPassed && score >= 2) addXp(XP.quiz, "Desafio superado"); else logActivity();
     tabBadge("quiz", quizScore(m.id) + "/3");
     document.getElementById("quizMsg").textContent = score + "/3 — " + (score>=2 ? "aprovado!" : "revise as explicações e tente de novo.");
     if(score >= 2 && moduleDone(m.id)){
+      if(m.elective) grant("spec");
       if(MODULES.every(x=>moduleDone(x.id))) grant("grad");
       setTimeout(()=>go("module", m.id, "quiz"), 900);
     }
     renderChrome();
+  };
+}
+
+/* ---------------- prova de dispensa ---------------- */
+function waiverHtml(m){
+  if(waived(m.id)) return `<div class="card">
+    <div class="eyebrow" style="color:var(--accent-2)">Dispensa aprovada</div>
+    <h3 style="margin:6px 0 6px;font-size:16px">Você comprovou domínio sem percorrer o módulo</h3>
+    <p class="muted" style="margin:0">O módulo conta como concluído e creditou 60% dos pontos de competência. As aulas e o laboratório continuam disponíveis para consulta.</p>
+  </div>`;
+  if(moduleDone(m.id)) return `<div class="card">
+    <div class="eyebrow">Dispensa</div>
+    <h3 style="margin:6px 0 6px;font-size:16px">Módulo já concluído pelo caminho completo</h3>
+    <p class="muted" style="margin:0">A prova de dispensa serve para quem já domina o conteúdo e quer pular direto.</p>
+  </div>`;
+  const qs = m.quiz.map((q,qi) => `<div class="card" style="margin-bottom:12px">
+      <div class="eyebrow">Questão ${qi+1} de ${m.quiz.length}</div>
+      <h3 style="font-size:15px;margin:6px 0 12px">${q.q}</h3>
+      ${q.o.map((o,oi)=>`<label class="opt" data-wq="${qi}" data-wo="${oi}"><input type="radio" name="w${qi}" value="${oi}"><span>${o}</span></label>`).join("")}
+    </div>`).join("");
+  return `<div class="card" style="margin-bottom:14px;border-color:color-mix(in srgb,var(--warn) 40%,var(--line))">
+      <div class="eyebrow" style="color:var(--warn)">Prova de dispensa</div>
+      <h3 style="margin:6px 0 6px;font-size:16px">Já domina este módulo? Prove e siga em frente</h3>
+      <p class="muted" style="margin:0;font-size:13.6px">Exige <b>acerto total</b> — errar uma questão significa fazer o módulo normalmente. Aprovado, o módulo conta como concluído, credita 60% dos pontos de competência e libera o próximo. Sem explicação depois: se errar, o conteúdo é o caminho.</p>
+    </div>
+    ${qs}
+    <div class="row"><button class="btn" id="wGo">Enviar prova de dispensa</button>
+      <span class="mini" id="wMsg"></span></div>`;
+}
+function wireWaiver(m){
+  const btn = document.getElementById("wGo");
+  if(!btn) return;
+  btn.onclick = () => {
+    let score = 0;
+    m.quiz.forEach((q,qi)=>{
+      const sel = document.querySelector('input[name="w'+qi+'"]:checked');
+      if(sel && +sel.value === q.a) score++;
+      else scheduleReview(m.id, qi);
+    });
+    if(score === m.quiz.length){
+      S.waived[m.id] = true; save();
+      creditCaps(m.id, "lessons", .6); creditCaps(m.id, "lab", .6); creditCaps(m.id, "quiz", .6);
+      grant("waiver");
+      if(m.elective) grant("spec");
+      if(MODULES.every(x=>moduleDone(x.id))) grant("grad");
+      addXp(XP.quiz, "Dispensa aprovada");
+      document.getElementById("wMsg").textContent = "Aprovado — módulo dispensado.";
+      setTimeout(()=>go("module", m.id, "waiver"), 900);
+    } else {
+      logActivity();
+      document.getElementById("wMsg").textContent = score + "/" + m.quiz.length + " — a dispensa exige acerto total. As questões erradas entraram na sua fila de revisão.";
+      renderChrome();
+    }
   };
 }
 
@@ -747,6 +1344,7 @@ LABS.prompt = m => {
         <div class="row" style="margin-top:12px">
           <button class="btn" id="pRun">Avaliar prompt</button>
           <button class="btn soft sm" id="pEx">Ver exemplo forte</button>
+          <button class="btn soft sm" id="pSave">Salvar na biblioteca</button>
           <span class="mini" id="pMsg">${saved!==null ? "Melhor pontuação: "+saved+"/100" : ""}</span>
         </div>
       </div>
@@ -805,6 +1403,57 @@ ATA:
   };
   document.getElementById("pRun").onclick = run;
   document.getElementById("pEx").onclick = () => { document.getElementById("pIn").value = example; run(); };
+  document.getElementById("pSave").onclick = () => {
+    const txt = document.getElementById("pIn").value.trim();
+    if(txt.length < 20){ toast("Prompt muito curto", "Escreva o prompt antes de salvar"); return; }
+    S.prompts.push({ t: PROMPT_BRIEFS[m.id].titulo, p: txt, at: today(), score: labScore(m.id) });
+    save(); renderChrome();
+    toast("Salvo na biblioteca", "Disponível em Biblioteca · Meus prompts");
+  };
+};
+
+/* --- Lab genérico de diagnóstico (eletivos): situação → tratamento --- */
+LABS.match = m => `<div class="lab">
+  <div><div class="card">
+    <div class="eyebrow">Briefing do laboratório</div>
+    <h3 style="margin:6px 0 8px;font-size:16px">${m.lab.titulo}</h3>
+    <p class="muted" style="font-size:13.6px">Cada situação tem um tratamento mais adequado. Escolha e confira o raciocínio.</p>
+    <div class="sep"></div>
+    ${m.lab.items.map((it,i)=>`<div class="step" style="align-items:flex-start;flex-direction:column;gap:8px" data-mi="${i}">
+      <div style="font-weight:600">${it.s}</div>
+      <select data-mt="${i}">${m.lab.opts.map(o=>'<option value="'+o.id+'">'+o.t+'</option>').join("")}</select>
+      <div class="mini" data-mw="${i}" style="display:none"></div>
+    </div>`).join("")}
+    <div class="row" style="margin-top:12px"><button class="btn" id="mRun">Conferir diagnóstico</button>
+      <span class="mini" id="mMsg">${labDone(m.id)?"Melhor pontuação: "+labScore(m.id)+"/100":""}</span></div>
+  </div></div>
+  <div class="card" style="align-self:start">
+    <div class="eyebrow">Avaliação</div>
+    <div class="score" id="mScore">—</div>
+    <div class="mini" id="mLabel">classifique as situações</div>
+    <div class="sep"></div>
+    <div class="mini">O erro comum é tratar problema de processo como problema de tecnologia — e o contrário.</div>
+  </div>
+</div>`;
+LAB_WIRE.match = m => {
+  document.getElementById("mRun").onclick = () => {
+    let right = 0;
+    m.lab.items.forEach((it,i)=>{
+      const pick = document.querySelector('[data-mt="'+i+'"]').value;
+      const ok = pick === it.ideal;
+      if(ok) right++;
+      const w = document.querySelector('[data-mw="'+i+'"]');
+      w.style.display = "block";
+      w.innerHTML = (ok ? "✓ " : "✗ ") + it.why;
+      w.style.color = ok ? "var(--accent-2)" : "var(--bad)";
+      document.querySelector('[data-mi="'+i+'"]').style.borderColor = ok ? "var(--accent-2)" : "var(--bad)";
+    });
+    const score = Math.round(right/m.lab.items.length*100);
+    document.getElementById("mScore").textContent = score + "/100";
+    document.getElementById("mLabel").textContent = right + " de " + m.lab.items.length + " diagnósticos corretos";
+    finishLab(m, score, null);
+    document.getElementById("mMsg").textContent = "Melhor pontuação: " + labScore(m.id) + "/100";
+  };
 };
 
 /* --- Lab 3: caça à alucinação --- */
@@ -1016,12 +1665,12 @@ LAB_WIRE.capstone = m => {
 function viewLabs(){
   document.getElementById("crumb").textContent = "Laboratórios";
   document.getElementById("title").textContent = "Laboratórios práticos";
-  const cards = MODULES.map((m,i)=>{
-    const open = unlocked(i), sc = labScore(m.id);
+  const cards = ALL.map((m,i)=>{
+    const open = unlockedM(m), sc = labScore(m.id);
     return `<div class="card">
       <div class="row" style="align-items:flex-start">
         <div style="min-width:0">
-          <div class="eyebrow">Módulo ${i+1}</div>
+          <div class="eyebrow">${m.elective ? "Especialização" : "Módulo " + (i+1)}</div>
           <h3 style="font-size:15px;margin:5px 0 4px">${LAB_TITLES[m.lab.type]}</h3>
           <p class="mini" style="margin:0">${m.title}</p>
         </div>
@@ -1032,7 +1681,7 @@ function viewLabs(){
       </div>
       <div class="row" style="margin-top:12px">
         ${open ? '<button class="btn sm" data-goto="module:'+m.id+':lab">Abrir laboratório</button>'
-               : '<span class="pill locked">🔒 liberado no módulo '+(i+1)+'</span>'}
+               : '<span class="pill locked">requisito: '+requirement(m)+'</span>'}
       </div>
     </div>`;
   }).join("");
@@ -1040,6 +1689,7 @@ function viewLabs(){
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(310px,1fr))">${cards}</div>`;
 }
 const LAB_TITLES = {
+  match:"Diagnóstico de situações",
   prompt:"Construtor de prompt com avaliação",
   hallucination:"Caça à alucinação",
   cost:"Orçamento de tokens e escolha de modelo",
@@ -1047,13 +1697,170 @@ const LAB_TITLES = {
   capstone:"Projeto final aplicado"
 };
 
-/* ---------------- conquistas ---------------- */
-function viewBadges(){
-  document.getElementById("crumb").textContent = "Conquistas";
-  document.getElementById("title").textContent = "Conquistas";
-  return `<p class="muted">Conquistas marcam qualidade de execução, não presença. Elas aparecem no perfil e podem alimentar o painel do gestor.</p>
-  <div class="badges">${BADGES.map(b=>`<div class="badge-card ${S.badges.includes(b.id)?"earned":""}">
-    <div class="em">${b.em}</div><b>${b.t}</b><span>${b.d}</span></div>`).join("")}</div>`;
+/* ---------------- biblioteca ---------------- */
+function viewLibrary(){
+  document.getElementById("crumb").textContent = "Biblioteca";
+  document.getElementById("title").textContent = "Consulta rápida";
+  const tab = route.tab === "prompts" || route.tab === "meus" ? route.tab : "glossario";
+  const tabs = [
+    ["glossario","Glossário", GLOSSARY.length],
+    ["prompts","Prompts prontos", PROMPT_LIB.length],
+    ["meus","Meus prompts", S.prompts.length]
+  ].map(([k,t,n])=>`<button class="tab" data-lib="${k}" aria-selected="${tab===k}">${t}<span class="badge">${n}</span></button>`).join("");
+
+  let body = "";
+  if(tab === "glossario"){
+    body = `<div class="grid" id="glist" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+      ${GLOSSARY.map(g=>`<div class="card libitem" data-k="${(g.t+" "+g.d).toLowerCase()}">
+        <b style="font-size:14.5px">${g.t}</b>
+        <p class="mini" style="margin:6px 0 0">${g.d}</p></div>`).join("")}</div>`;
+  } else if(tab === "prompts"){
+    body = `<div class="grid" id="glist">${PROMPT_LIB.map((p,i)=>`<div class="card libitem" data-k="${(p.t+" "+p.p).toLowerCase()}">
+      <div class="row" style="align-items:flex-start">
+        <div><div class="eyebrow">${capName(p.cap)}</div><b style="font-size:14.5px">${p.t}</b></div>
+        <button class="btn soft sm" style="margin-left:auto" data-copy="lib${i}">Copiar</button>
+      </div>
+      <div class="out" style="margin-top:10px" id="lib${i}">${p.p}</div></div>`).join("")}</div>`;
+  } else {
+    body = S.prompts.length ? `<div class="grid" id="glist">${S.prompts.map((p,i)=>`<div class="card libitem" data-k="${(p.t+" "+p.p).toLowerCase()}">
+      <div class="row" style="align-items:flex-start">
+        <div><div class="eyebrow">salvo em ${p.at}${p.score!=null?" · lab "+p.score+"/100":""}</div><b style="font-size:14.5px">${p.t}</b></div>
+        <button class="btn soft sm" style="margin-left:auto" data-copy="my${i}">Copiar</button>
+        <button class="btn soft sm" data-del="${i}">Remover</button>
+      </div>
+      <div class="out" style="margin-top:10px" id="my${i}">${p.p}</div></div>`).join("")}</div>`
+      : `<div class="card"><b>Nenhum prompt salvo ainda</b><p class="mini" style="margin:6px 0 0">No laboratório de prompt, use <b>Salvar na biblioteca</b>. O que funcionou vira ativo reutilizável — seu e, depois, do time.</p></div>`;
+  }
+  return `<p class="muted">O que sobra depois da aula: definições, prompts prontos e os seus próprios prompts validados em laboratório.</p>
+    <div class="tabs">${tabs}</div>
+    <input type="text" id="libSearch" placeholder="Buscar…" style="margin-bottom:14px">
+    ${body}`;
+}
+function wireLibrary(){
+  document.querySelectorAll("[data-lib]").forEach(b => b.onclick = () => go("library", null, b.dataset.lib));
+  const s = document.getElementById("libSearch");
+  s.oninput = () => {
+    const q = s.value.trim().toLowerCase();
+    document.querySelectorAll(".libitem").forEach(el => {
+      el.style.display = !q || el.dataset.k.includes(q) ? "" : "none";
+    });
+  };
+  document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
+    const txt = document.getElementById(b.dataset.copy).textContent;
+    navigator.clipboard && navigator.clipboard.writeText(txt);
+    toast("Prompt copiado", "Cole no seu assistente");
+  });
+  document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    S.prompts.splice(+b.dataset.del, 1); save(); go("library", null, "meus");
+  });
+}
+
+/* ---------------- evolução ---------------- */
+function viewGrowth(){
+  document.getElementById("crumb").textContent = "Evolução";
+  document.getElementById("title").textContent = "Suas competências";
+  const cards = CAPS.map(c=>{
+    const p = capPoints(c.id), lv = capLevel(c.id), nx = capNext(c.id);
+    const pct = Math.min(100, Math.round(p/capMax(c.id)*100));
+    const fontes = ALL.filter(m=>m.caps[c.id] && !moduleDone(m.id) && unlockedM(m)).slice(0,2);
+    return `<div class="card">
+      <div class="row" style="align-items:baseline"><b style="font-size:15px">${c.nome}</b>
+        <span class="pill open" style="margin-left:auto">${lv.t}</span></div>
+      <p class="mini" style="margin:6px 0 10px">${c.d}</p>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="row" style="justify-content:space-between"><span class="mini">${p} pts</span>
+        <span class="mini">${nx ? "faltam " + (nx.min - p) + " para " + nx.t : "nível máximo"}</span></div>
+      ${fontes.length ? '<div class="mini" style="margin-top:10px">Onde ganhar mais: '+fontes.map(f=>'<a href="#" data-goto="module:'+f.id+':lessons">'+f.title+'</a>').join(" · ")+'</div>' : ""}
+    </div>`;
+  }).join("");
+  const locked = ELECTIVES.filter(m=>!unlockedM(m));
+  const gate = locked.length ? `<div class="card" style="margin-top:16px">
+    <div class="eyebrow">O que sua competência ainda não abriu</div>
+    ${locked.map(m=>`<div class="kv"><span>${m.title}</span><b class="mini">${requirement(m)}</b></div>`).join("")}
+  </div>` : "";
+  return `<div class="grid" style="grid-template-columns:1fr 320px">
+      <div>
+        <p class="muted">Competência é creditada por prática avaliada: cada aula, laboratório e desafio soma pontos nas capabilities do módulo, proporcionalmente ao seu desempenho.</p>
+        <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(290px,1fr))">${cards}</div>
+        ${gate}
+      </div>
+      <div class="card" style="align-self:start">
+        <div class="eyebrow">Radar</div>
+        ${radarSvg(260)}
+        <div class="sep"></div>
+        <div class="eyebrow">Conquistas · ${S.badges.length}/${BADGES.length}</div>
+        <div class="badges" style="grid-template-columns:1fr 1fr;margin-top:10px">
+          ${BADGES.map(b=>`<div class="badge-card ${S.badges.includes(b.id)?"earned":""}" style="padding:10px">
+            <div class="em" style="font-size:20px">${b.em}</div><b style="font-size:12px">${b.t}</b><span style="font-size:11px">${b.d}</span></div>`).join("")}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---------------- portfólio ---------------- */
+function viewPortfolio(){
+  document.getElementById("crumb").textContent = "Portfólio";
+  document.getElementById("title").textContent = "Aplicação no trabalho real";
+  const horas = S.cases.reduce((s,c)=>s+(+c.horas||0),0);
+  const rows = S.cases.length ? S.cases.map((c,i)=>`<div class="card" style="margin-bottom:10px">
+      <div class="row" style="align-items:flex-start">
+        <div style="min-width:0">
+          <div class="eyebrow">${c.at} · ${c.status}</div>
+          <b style="font-size:14.5px">${c.t}</b>
+          <p class="mini" style="margin:6px 0 0">${c.d}</p>
+        </div>
+        <div style="margin-left:auto;text-align:right">
+          <div class="score" style="font-size:20px">${c.horas}h</div>
+          <div class="mini">por semana</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn soft sm" data-cstat="${i}">${c.status === "em piloto" ? "Marcar como em produção" : "Voltar para piloto"}</button>
+        <button class="btn soft sm" data-cdel="${i}">Remover</button>
+      </div>
+    </div>`).join("") : `<div class="card"><b>Nenhum caso registrado</b><p class="mini" style="margin:6px 0 0">O portfólio é o que transforma aprendizado em evidência: caso aplicado, ganho estimado e situação atual.</p></div>`;
+
+  return `<div class="grid" style="grid-template-columns:1fr 320px">
+    <div>
+      <p class="muted">Registre onde a IA entrou no seu trabalho de verdade. Esses casos alimentam o certificado e o argumento de retorno para a liderança.</p>
+      ${rows}
+    </div>
+    <div class="card" style="align-self:start">
+      <div class="eyebrow">Novo caso</div>
+      <label class="mini" style="display:block;margin-top:8px">Processo</label>
+      <input type="text" id="cT" placeholder="Ex.: triagem de chamados">
+      <label class="mini" style="display:block;margin-top:10px">Como a IA entra e como você verifica</label>
+      <textarea id="cD" rows="3" placeholder="Ex.: classifica por assunto; confiro amostra de 20 por dia"></textarea>
+      <label class="mini" style="display:block;margin-top:10px">Horas economizadas por semana</label>
+      <input type="number" id="cH" min="0" step="0.5" placeholder="3">
+      <button class="btn" style="margin-top:12px" id="cAdd">Registrar caso</button>
+      <div class="sep"></div>
+      <div class="kv"><span>Casos</span><b>${S.cases.length}</b></div>
+      <div class="kv"><span>Ganho declarado</span><b>${horas}h/semana</b></div>
+      <div class="kv"><span>Em produção</span><b>${S.cases.filter(c=>c.status!=="em piloto").length}</b></div>
+    </div>
+  </div>`;
+}
+function wirePortfolio(){
+  document.getElementById("cAdd").onclick = () => {
+    const t = document.getElementById("cT").value.trim();
+    const d = document.getElementById("cD").value.trim();
+    const h = +document.getElementById("cH").value || 0;
+    if(t.length < 4 || d.length < 8){ toast("Faltam informações", "Descreva o processo e a verificação"); return; }
+    S.cases.push({ t, d, horas: h, status: "em piloto", at: today() });
+    save(); logActivity();
+    if(h > 0 && !S.badges.includes("applied")) grant("applied");
+    toast("Caso registrado", h ? h + "h/semana somadas ao seu impacto" : "Sem ganho declarado ainda");
+    go("portfolio");
+  };
+  document.querySelectorAll("[data-cstat]").forEach(b => b.onclick = () => {
+    const c = S.cases[+b.dataset.cstat];
+    c.status = c.status === "em piloto" ? "em produção" : "em piloto";
+    save(); go("portfolio");
+  });
+  document.querySelectorAll("[data-cdel]").forEach(b => b.onclick = () => {
+    S.cases.splice(+b.dataset.cdel,1); save(); go("portfolio");
+  });
 }
 
 /* ---------------- perfil ---------------- */
@@ -1062,31 +1869,76 @@ function viewProfile(){
   document.getElementById("title").textContent = "Seu progresso";
   const done = MODULES.filter(m=>moduleDone(m.id)).length;
   const all = done === MODULES.length;
-  const rows = MODULES.map((m,i)=>{
+  const specs = ELECTIVES.filter(m=>moduleDone(m.id));
+  const horas = S.cases.reduce((s,c)=>s+(+c.horas||0),0);
+  const rows = ALL.map((m,i)=>{
     const p = moduleProgress(m.id);
-    return `<div class="kv"><span>${i+1}. ${m.title}</span><b>${moduleDone(m.id)?"concluído":unlocked(i)?p.pct+"%":"bloqueado"}</b></div>`;
+    const label = moduleDone(m.id) ? (waived(m.id) ? "dispensado" : "concluído") : unlockedM(m) ? p.pct+"%" : "bloqueado";
+    return `<div class="kv"><span>${m.elective ? "◆" : (i+1)+"."} ${m.title}</span><b>${label}</b></div>`;
   }).join("");
+  const capRows = CAPS.map(c=>`<div class="kv"><span>${c.nome}</span><b>${capLevel(c.id).t} · ${capPoints(c.id)}</b></div>`).join("");
   const cert = all ? `<div class="cert" style="margin-bottom:18px">
       <div class="eyebrow" style="color:var(--gold)">Certificado de conclusão</div>
       <h2>Fundamentos de IA aplicada ao trabalho</h2>
-      <p class="muted">Trilha base concluída com ${S.xp} XP e ${S.badges.length} conquistas.<br>Projeto final: <b>${S.capstone || "—"}</b></p>
+      <p class="muted">Trilha base concluída com ${S.xp} XP e ${S.badges.length} conquistas.<br>
+      Competências: ${CAPS.map(c=>c.curto+" "+capLevel(c.id).t.toLowerCase()).join(" · ")}<br>
+      ${specs.length ? "Especializações: <b>"+specs.map(s=>s.title).join(", ")+"</b><br>" : ""}
+      Projeto final: <b>${S.capstone || "—"}</b><br>
+      Aplicação registrada: <b>${S.cases.length} caso(s), ${horas}h/semana</b></p>
       <button class="btn" onclick="window.print()">Imprimir certificado</button>
     </div>` : `<div class="card" style="margin-bottom:18px">
       <div class="eyebrow">Certificado</div>
-      <h3 style="margin:6px 0 6px;font-size:16px">Disponível ao concluir os 6 módulos</h3>
-      <p class="muted" style="margin:0">Você concluiu ${done} de ${MODULES.length}. O certificado registra XP, conquistas e o projeto final entregue.</p>
+      <h3 style="margin:6px 0 6px;font-size:16px">Disponível ao concluir os 6 módulos da trilha base</h3>
+      <p class="muted" style="margin:0">Você concluiu ${done} de ${MODULES.length}. O certificado registra nível por competência, especializações, projeto final e casos aplicados — não apenas conclusão.</p>
     </div>`;
   return cert + `<div class="grid" style="grid-template-columns:1fr 300px">
-    <div class="card"><div class="eyebrow">Progresso por módulo</div><div style="margin-top:8px">${rows}</div></div>
+    <div class="card"><div class="eyebrow">Progresso por módulo</div><div style="margin-top:8px">${rows}</div>
+      <div class="sep"></div>
+      <div class="eyebrow">Nível por competência</div><div style="margin-top:8px">${capRows}</div>
+    </div>
     <div class="card" style="align-self:start">
       <div class="eyebrow">Resumo</div>
       <div class="kv" style="margin-top:8px"><span>Nível</span><b>${levelOf(S.xp)}</b></div>
       <div class="kv"><span>XP</span><b>${S.xp}</b></div>
-      <div class="kv"><span>Laboratórios</span><b>${MODULES.filter(m=>labDone(m.id)).length}/${MODULES.length}</b></div>
+      <div class="kv"><span>Laboratórios</span><b>${ALL.filter(m=>labDone(m.id)).length}/${ALL.length}</b></div>
       <div class="kv"><span>Conquistas</span><b>${S.badges.length}/${BADGES.length}</b></div>
+      <div class="kv"><span>Revisões agendadas</span><b>${S.review.length}</b></div>
+      <div class="kv"><span>Casos aplicados</span><b>${S.cases.length}</b></div>
       <div class="sep"></div>
-      <div class="mini">Protótipo: o progresso fica salvo apenas neste navegador.</div>
+      <div class="eyebrow">Continuidade</div>
+      <p class="mini" style="margin:8px 0 10px">Neste protótipo o progresso vive só neste navegador. Exporte para levar para outra máquina — na versão real isso vira conta de usuário.</p>
+      <div class="row">
+        <button class="btn soft sm" id="expBtn">Exportar progresso</button>
+        <button class="btn soft sm" id="impBtn">Importar</button>
+        <input type="file" id="impFile" accept="application/json" style="display:none">
+      </div>
+      <div class="sep"></div>
+      <button class="btn soft sm" id="redoDiag">Refazer diagnóstico</button>
     </div></div>`;
+}
+function wireProfile(){
+  document.getElementById("expBtn").onclick = () => {
+    const blob = new Blob([JSON.stringify(S, null, 2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "atelie-ia-progresso.json";
+    a.click(); URL.revokeObjectURL(a.href);
+    toast("Progresso exportado", "atelie-ia-progresso.json");
+  };
+  const file = document.getElementById("impFile");
+  document.getElementById("impBtn").onclick = () => file.click();
+  file.onchange = () => {
+    const f = file.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        S = Object.assign(blank(), JSON.parse(r.result));
+        save(); toast("Progresso importado", "Estado restaurado"); go("home");
+      }catch(e){ toast("Arquivo inválido", "Esperado um JSON exportado aqui"); }
+    };
+    r.readAsText(f);
+  };
+  document.getElementById("redoDiag").onclick = () => { S.diag = null; save(); go("diag"); };
 }
 
 render();
