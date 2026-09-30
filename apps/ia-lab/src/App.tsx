@@ -80,6 +80,9 @@ function Header() {
         <span className="brand-mark">✳</span>
         <span>IA <strong>Lab</strong></span>
       </Link>
+      <a className="site-return-link" href="../" aria-label="IA para Engenharia">
+        ← IA para Engenharia
+      </a>
       <nav className="main-nav" aria-label="Navegação principal">
         <NavLink to="/" end>Trilha</NavLink>
         <NavLink to="/sandbox">Sandbox</NavLink>

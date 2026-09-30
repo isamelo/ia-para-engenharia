@@ -52,6 +52,14 @@ export default defineConfig({
           items: [{ label: 'Matriz de ferramentas', slug: 'ferramentas' }],
         },
         {
+          label: 'IA Lab (sandbox)',
+          items: [{
+            label: 'IA Lab — pratique com Python',
+            link: '/lab/',
+            attrs: { target: '_self' },
+          }],
+        },
+        {
           label: 'Biblioteca de prompts',
           items: [{ label: 'Biblioteca de prompts', slug: 'prompts' }],
         },
