@@ -18,6 +18,18 @@ npm run build      # build de produção em dist/
 npm run preview    # pré-visualização do build
 ```
 
+## IA Lab (sandbox Python)
+
+O app independente fica em `apps/ia-lab` e executa Python no navegador com Pyodide.
+
+```bash
+npm ci --prefix apps/ia-lab
+npm --prefix apps/ia-lab run dev
+npm run build && npm run build:lab
+```
+
+No site publicado, o laboratório é servido em `/lab/` (sob a base `/ia-para-engenharia`).
+
 ## Licenças
 
 - **Conteúdo:** CC BY 4.0
