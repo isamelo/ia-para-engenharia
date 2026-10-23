@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:lab": "npm --prefix apps/ia-lab run build -- --outDir ../../dist/lab --emptyOutDir",
     "preview": "astro preview",
     "astro": "astro"
   },

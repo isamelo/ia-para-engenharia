@@ -1,0 +1,37 @@
+name: IA Lab
+
+on:
+  pull_request:
+    paths:
+      - 'apps/ia-lab/**'
+      - '.github/workflows/ia-lab.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/ia-lab/**'
+      - '.github/workflows/ia-lab.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/ia-lab
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Verify curriculum
+        run: npm run verify:curriculum
+      - name: Build
+        run: npm run build
