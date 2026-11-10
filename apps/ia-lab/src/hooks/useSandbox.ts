@@ -12,8 +12,9 @@ export function useSandbox() {
     code: string,
     tests: TestCase[] = [],
     packages: string[] = [],
+    prelude = "",
   ): Promise<SandboxResult> {
-    return sandboxClient.run(code, tests, packages);
+    return sandboxClient.run(code, tests, packages, prelude);
   }
 
   return { status, run };

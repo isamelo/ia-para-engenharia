@@ -12,6 +12,8 @@ _error = None
 _tests = []
 
 try:
+    if _input["prelude"]:
+        exec(compile(_input["prelude"], "<cenario>", "exec"), _scope, _scope)
     with contextlib.redirect_stdout(_stdout), contextlib.redirect_stderr(_stderr):
         exec(compile(_input["code"], "<aluno>", "exec"), _scope, _scope)
 except BaseException as _exc:

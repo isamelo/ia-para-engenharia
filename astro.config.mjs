@@ -52,9 +52,9 @@ export default defineConfig({
           items: [{ label: 'Matriz de ferramentas', slug: 'ferramentas' }],
         },
         {
-          label: 'IA Lab (sandbox)',
+          label: 'IA Lab',
           items: [{
-            label: 'IA Lab — pratique com Python',
+            label: 'IA Lab: diagnóstico e missões',
             link: '/lab/',
             attrs: { target: '_self' },
           }],

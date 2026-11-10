@@ -51,6 +51,7 @@ class SandboxClient {
     code: string,
     tests: TestCase[] = [],
     packages: string[] = [],
+    prelude = "",
   ): Promise<SandboxResult> {
     return new Promise((resolve) => {
       const request: SandboxRequest = {
@@ -59,6 +60,7 @@ class SandboxClient {
         code,
         tests,
         packages,
+        prelude,
       };
       this.queue.push({ request, resolve });
       this.dispatchNext();

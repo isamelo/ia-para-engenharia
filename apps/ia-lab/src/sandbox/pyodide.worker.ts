@@ -55,6 +55,7 @@ async function run(request: SandboxRequest) {
     const input = pyodide.toPy({
       code: request.code,
       tests: request.tests ?? [],
+      prelude: request.prelude ?? "",
     });
     pyodide.globals.set("__ialab_input", input);
     workerScope.postMessage({ type: "started", id: request.id });
