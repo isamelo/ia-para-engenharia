@@ -16,4 +16,6 @@ export interface SandboxRequest {
   code: string;
   tests?: TestCase[];
   packages?: string[];
+  /** Código do cenário, executado antes do código do participante no mesmo namespace. */
+  prelude?: string;
 }
