@@ -158,7 +158,15 @@ export function ListaCriterios({ criterios }: { criterios: ResultadoCriterio[] }
   );
 }
 
-export function Veredito({ nivel, contexto }: { nivel: number; contexto: "missao" | "diagnostico" }) {
+export function Veredito({
+  nivel,
+  contexto,
+  melhor = nivel,
+}: {
+  nivel: number;
+  contexto: "missao" | "diagnostico";
+  melhor?: number;
+}) {
   const tom = nivel >= 3 ? "ok" : nivel === 2 ? "atencao" : "critico";
   const titulo =
     nivel === 0
@@ -169,10 +177,16 @@ export function Veredito({ nivel, contexto }: { nivel: number; contexto: "missao
   return (
     <div className={`veredito veredito-${tom}`} role="status">
       <strong>{titulo}</strong>
-      {nivel === 1 && (
+      {nivel === 1 && contexto === "diagnostico" && (
         <span>O mapa registra nível 1 (reconhece) até que os critérios do nível 2 passem.</span>
       )}
+      {nivel === 1 && contexto === "missao" && melhor < 2 && (
+        <span>Este envio não entra no mapa: a missão só registra nível verificado a partir do nível 2.</span>
+      )}
       {nivel === 2 && <span>Faltam critérios do nível 3 para evidenciar autonomia.</span>}
+      {melhor > nivel && melhor >= 2 && (
+        <span>O mapa mantém o melhor resultado desta missão: nível {melhor} verificado.</span>
+      )}
     </div>
   );
 }

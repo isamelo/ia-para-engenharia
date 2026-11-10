@@ -77,7 +77,7 @@ function MissaoSandbox({ missao }: { missao: Missao }) {
         }}
       >
         {ultima && (
-          <ResultadoMissao evidencia={ultima}>
+          <ResultadoMissao evidencia={ultima} melhor={estado.missoes[missao.id]?.melhor.nivel}>
             <p className="nota">
               A correção usa dados diferentes dos do cenário. As mensagens descrevem o
               comportamento esperado, não o caso de teste.

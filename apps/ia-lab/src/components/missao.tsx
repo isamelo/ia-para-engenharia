@@ -43,14 +43,16 @@ export function CabecalhoMissao({
 
 export function ResultadoMissao({
   evidencia,
+  melhor,
   children,
 }: {
   evidencia: Evidencia;
+  melhor?: number;
   children?: ReactNode;
 }) {
   return (
     <div className="painel resultado">
-      <Veredito nivel={evidencia.nivel} contexto="missao" />
+      <Veredito nivel={evidencia.nivel} contexto="missao" melhor={melhor} />
       <ListaCriterios criterios={evidencia.criterios} />
       {children}
       <div className="acoes">

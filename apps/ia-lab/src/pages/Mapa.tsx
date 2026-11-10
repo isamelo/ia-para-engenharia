@@ -194,7 +194,9 @@ export function Mapa() {
                 : "Você ainda não fez o diagnóstico."}
             </strong>
             <span>
-              Sem o diagnóstico, o mapa só mostra o que foi verificado em missões.
+              {iniciado
+                ? "O mapa mostra os itens já respondidos e o que foi verificado em missões. As outras capacidades ficam sem evidência até você concluir."
+                : "Sem o diagnóstico, o mapa só mostra o que foi verificado em missões."}
             </span>
           </div>
           <Link className="botao primario" to="/diagnostico">

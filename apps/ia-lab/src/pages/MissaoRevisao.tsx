@@ -309,7 +309,10 @@ export function MissaoRevisao() {
           </div>
 
           {resultado && (
-            <ResultadoMissao evidencia={resultado.evidencia}>
+            <ResultadoMissao
+              evidencia={resultado.evidencia}
+              melhor={estado.missoes[missaoRevisao.id]?.melhor.nivel}
+            >
               {resultado.resumo.encontrados.length > 0 && (
                 <div className="defeitos">
                   <h3>Defeitos que você bloqueou</h3>

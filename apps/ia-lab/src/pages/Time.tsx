@@ -100,7 +100,7 @@ export function Time() {
       <section className="secao">
         <div className="secao-topo">
           <h2>Pessoa por capacidade</h2>
-          <button className="botao secundario" onClick={() => baixarCsv(linhas, ciclo)}>
+          <button className="botao secundario" onClick={() => baixarCsv(tabela, ciclo)}>
             Exportar CSV
           </button>
         </div>
@@ -152,7 +152,7 @@ export function Time() {
           <span className="legenda-item">nível / alvo</span>
         </p>
         {voce ? (
-          <p className="nota">Sua linha vem do seu mapa e não entra nos totais do squad de demonstração.</p>
+          <p className="nota">Sua linha vem do seu mapa. Ela entra no CSV exportado, mas não nos totais do squad de demonstração.</p>
         ) : (
           <p className="nota">
             <Link to="/diagnostico">Faça o diagnóstico</Link> para ver a sua linha ao lado do squad de demonstração.
